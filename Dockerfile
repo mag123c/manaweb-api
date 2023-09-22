@@ -1,13 +1,12 @@
 FROM node:18-alpine
-ENV PORT=8080
 
+RUN mkdir -p /app
 WORKDIR /app
-COPY package.json /app
+ADD . /app/
 
 RUN npm install
-COPY . /app
 RUN npm run build
 
-EXPOSE $PORT
-CMD ["npm", "run", "start"]
-# CMD [ "node", "./dist/main.js" ]
+EXPOSE 8080
+
+ENTRYPOINT npm run start:prod
