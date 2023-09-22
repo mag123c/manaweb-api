@@ -10,6 +10,6 @@ async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
   const app = await NestFactory.create(AppModule);
   setupSwagger(app);
-  await app.listen(3000);
+  await app.listen(8080);
 }
 bootstrap();
