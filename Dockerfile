@@ -1,23 +1,20 @@
-# STEP 1
-# 1
-FROM node:18 AS builder
-# 2
-WORKDIR /app
-# 3
-COPY . .
-# 4
-RUN yarn
-# 5
-RUN yarn build
+# Base image
+FROM node:18-alpine
 
-# STEP 2
-#6
-FROM node:8-alpine
-#7
-WORKDIR /app
-#8
-ENV NODE_ENV production
-#9
-COPY --from=builder /app ./
-#10
-CMD ["yarn","start:prod"]
+# Create app directory
+WORKDIR /usr/src/app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Creates a "dist" folder with the production build
+RUN npm run build
+
+# Start the server using the production build
+CMD [ "node", "dist/main.js" ]
