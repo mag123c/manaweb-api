@@ -6,8 +6,8 @@ export class CalculatorController {
   constructor(private readonly calculatorService: CalculatorService) {}
 
   @Get()
-  async calculate(@Query('price') price: string, @Query('percent') percent: string, @Query('time') time: string) {
-    return await this.calculatorService.calculate(+price, +percent, time);
+  async calculate(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
+    return await this.calculatorService.calculate(price, percent, time, type);
   }
 
   @Get('/test')
@@ -37,8 +37,8 @@ export class CalculatorController {
             'currentPrice': currentPrice,
             'totalPercent': totalPercent,
         });
-    }
-    
+      }
+    ``
     return { priceArr, data };
   }
 }
