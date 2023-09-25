@@ -8,7 +8,7 @@ async function bootstrap() {
   //   'http://localhost:6800',
   // ];
   process.env.TZ = 'Asia/Seoul';
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   setupSwagger(app);
   await app.listen(8080);
 }
