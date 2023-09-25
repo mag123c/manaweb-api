@@ -35,7 +35,3 @@ package-lock.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-# settings
-.env.production
-.env

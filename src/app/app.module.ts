@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { CalculatorModule } from 'src/calculator/calculator.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -11,19 +13,19 @@ import { CalculatorModule } from 'src/calculator/calculator.module';
       isGlobal: true,
       envFilePath: getEnvFileName(),
     }),
-    // TypeOrmModule.forRootAsync({      
-    //   useFactory: () => ({
-    //   type: 'mysql',
-    //   host: process.env.DB_HOST,
-    //   port: +process.env.PORT,
-    //   username: process.env.DB_USER,
-    //   password: process.env.DB_PASSWORD,
-    //   database: process.env.DB_NAME,
-    //   logging: true,
-    //   entities: [],
-    //   synchronize: false,
-    //   })
-    // }),
+    TypeOrmModule.forRootAsync({      
+      useFactory: () => ({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: +process.env.PORT,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      logging: true,
+      entities: [join(__dirname, '../**/*.entity.ts')],
+      synchronize: true,
+      })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
