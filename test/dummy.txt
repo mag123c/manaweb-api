@@ -1,1 +1,1 @@
-dummy test
+배포용 더미
