@@ -19,7 +19,9 @@ jobs:
 
     - name: Build the Docker image
       run: docker build -t manaweb-api .
+
     - name: taging
       run: docker tag manaweb-api:latest mag123c/manaweb-api:latest
+
     - name: Push to Dockerhub
       run: docker push mag123c/manaweb-api:latest
