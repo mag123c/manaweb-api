@@ -19,10 +19,10 @@ export class CalculatorService {
 
       priceArr.push(currentPrice);
       data.push({
-        'tmp': i,
+        'tmp': i + type,
         'revenue': revenue,
         'currentPrice': currentPrice,
-        'totalPercent': totalPercent,
+        'totalPercent': totalPercent + '%',
       });
     }
 
