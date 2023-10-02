@@ -8,5 +8,5 @@ export class AppController {
   @Get('/health')
     checkHealth() {
       return { status: 'ok' };
-    }
+  }
 }

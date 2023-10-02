@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
+import { LogService } from 'src/log/log.service';
 
 @Controller('/api/v1/calculator')
 export class CalculatorController {
-  constructor(private readonly calculatorService: CalculatorService) {}
+  constructor(
+    private readonly calculatorService: CalculatorService,
+    ) {}
 
   @Get()
   async calculate(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {

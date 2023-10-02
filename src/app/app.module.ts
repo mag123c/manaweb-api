@@ -4,11 +4,14 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { CalculatorModule } from 'src/calculator/calculator.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
+import { LogModule } from 'src/log/log.module';
+import { UserVisitEntity } from 'src/log/entity/userVisit.entity';
+import { UserClickEntity } from 'src/log/entity/userClick.entity';
 
 @Module({
   imports: [
     CalculatorModule,
+    LogModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFileName(),
@@ -22,8 +25,8 @@ import { join } from 'path';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       logging: true,
-      entities: [join(__dirname, '../**/*.entity.ts')],
-      synchronize: true,
+      entities: [UserVisitEntity, UserClickEntity],
+      synchronize: false,
       })
     }),
   ],

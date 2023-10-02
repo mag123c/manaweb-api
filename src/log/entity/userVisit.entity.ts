@@ -8,9 +8,12 @@ export class UserVisitEntity {
     @Column({ name: 'user_agent', comment: 'req header의 user-agent' })
     user_agent: string;
 
-    @Column({ name: 'platform_type', comment: '접속 기기 타입'})
-    platform_type: string
+    @Column({ name: 'device', comment: '접속 기기 타입'})
+    device: string
 
-    @Column({ name: 'create_date'})
+    @Column({ name: 'url' })
+    url: string
+
+    @Column({ name: 'create_date', default: () => 'CURRENT_TIMESTAMP' })
     create_date: Date;
 }

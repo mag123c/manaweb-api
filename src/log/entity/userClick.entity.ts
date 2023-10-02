@@ -8,6 +8,9 @@ export class UserClickEntity {
     @Column({ name: 'url', comment: '클릭한 위치' })
     url: string;
 
-    @Column({ name: 'create_date'})
+    @Column({ name: 'clicks' })
+    clicks: number;
+
+    @Column({ name: 'create_date', default: () => 'CURRENT_TIMESTAMP' })
     create_date: Date;
 }
