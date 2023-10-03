@@ -41,7 +41,7 @@ export class LogService {
         try {
             const reqURL: string = req.url.indexOf("?") > -1 ? req.url.split("?")[0] : req.url;
             const existLog = await this.findTodayCalculateLog(reqURL);
-                    
+
             if(existLog) return await this.updateTodayCalculateLog(reqURL, existLog);
             else return await this. addTodayCalculateLog(reqURL)
         }catch(error) {
@@ -66,7 +66,7 @@ export class LogService {
     }
 
     async addTodayCalculateLog(reqURL: string) {
-        return await this.userClickRepository.save({ 'url': reqURL });
+        return await this.userClickRepository.save({ 'url': reqURL, 'clicks': 1 });
     }
 
     async updateTodayCalculateLog(reqURL: string, existLog: UserClickEntity) {
