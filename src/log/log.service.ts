@@ -15,10 +15,14 @@ export class LogService {
 
     //Visit log
     async addVisitLog(req: any) {
-        const userAgent: string = req.headers['user-agent'];
-        const reqURL: string = req.url;
-        const device = await this.checkDevice(userAgent);
-        await this.userVisitRepository.save({ 'user_agent': userAgent, 'device': device, 'url': reqURL });
+        try {
+            const userAgent: string = req.headers['user-agent'];
+            const reqURL: string = req.url;
+            const device = await this.checkDevice(userAgent);
+            await this.userVisitRepository.save({ 'user_agent': userAgent, 'device': device, 'url': reqURL });
+        } catch(error) {
+            console.log(error);
+        }
     }
 
     async checkDevice(userAgent: string) {
@@ -33,13 +37,16 @@ export class LogService {
     //Visit log end
 
     //Calculate log
-    async addCalculateLog(req: any) {        
-        const reqURL: string = req.url.indexOf("?") > -1 ? req.url.split("?")[0] : req.url;
-
-        const existLog = await this.findTodayCalculateLog(reqURL);
-    
-        if(existLog) return await this.updateTodayCalculateLog(reqURL, existLog);
-        else return await this. addTodayCalculateLog(reqURL)
+    async addCalculateLog(req: any) {  
+        try {
+            const reqURL: string = req.url.indexOf("?") > -1 ? req.url.split("?")[0] : req.url;
+            const existLog = await this.findTodayCalculateLog(reqURL);
+                    
+            if(existLog) return await this.updateTodayCalculateLog(reqURL, existLog);
+            else return await this. addTodayCalculateLog(reqURL)
+        }catch(error) {
+            console.log(error);
+        }        
     }
 
     async findTodayCalculateLog(reqURL: string) {
