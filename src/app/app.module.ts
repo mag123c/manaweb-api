@@ -7,11 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LogModule } from 'src/log/log.module';
 import { UserVisitEntity } from 'src/log/entity/userVisit.entity';
 import { UserClickEntity } from 'src/log/entity/userClick.entity';
+import { SuggestionEntity } from 'src/suggestion/entity/suggestion.entity';
+import { SuggestionModule } from 'src/suggestion/suggestion.module';
 
 @Module({
   imports: [
     CalculatorModule,
     LogModule,
+    SuggestionModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFileName(),
@@ -25,7 +28,7 @@ import { UserClickEntity } from 'src/log/entity/userClick.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       logging: true,
-      entities: [UserVisitEntity, UserClickEntity],
+      entities: [UserVisitEntity, UserClickEntity, SuggestionEntity],
       synchronize: false,
       })
     }),
