@@ -27,6 +27,7 @@ import { SuggestionModule } from 'src/suggestion/suggestion.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      timezone: process.env.TZ,
       logging: true,
       entities: [UserVisitEntity, UserClickEntity, SuggestionEntity],
       synchronize: false,
