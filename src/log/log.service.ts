@@ -14,12 +14,11 @@ export class LogService {
     ){}
 
     //Visit log
-    async addVisitLog(req: any) {
+    async addVisitLog(req:any, url: string) {
         try {
             const userAgent: string = req.headers['user-agent'];
-            const reqURL: string = req.url;
             const device = await this.checkDevice(userAgent);
-            await this.userVisitRepository.save({ 'user_agent': userAgent, 'device': device, 'url': reqURL });
+            await this.userVisitRepository.save({ 'user_agent': userAgent, 'device': device, 'url': url });
         } catch(error) {
             console.log(error);
         }
@@ -37,9 +36,9 @@ export class LogService {
     //Visit log end
 
     //Calculate log
-    async addCalculateLog(req: any) {  
+    async addCalculateLog(url: any) {  
         try {
-            const reqURL: string = req.url.indexOf("?") > -1 ? req.url.split("?")[0] : req.url;
+            const reqURL: string = url.indexOf("?") > -1 ? url.split("?")[0] : url;
             const existLog = await this.findTodayCalculateLog(reqURL);
 
             if(existLog) return await this.updateTodayCalculateLog(reqURL, existLog);

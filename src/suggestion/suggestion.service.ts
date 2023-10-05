@@ -10,8 +10,8 @@ export class SuggestionService {
         private suggestionRepository: Repository<SuggestionEntity>
     ){}
 
-    async sendSuggestion(suggestion: string) {
-        return this.suggestionRepository.save({ 'suggestion': suggestion });
+    async sendSuggestion(suggestion: string, email: string) {
+        return this.suggestionRepository.save({ 'suggestion': suggestion, 'email': email });
     }
 }
 

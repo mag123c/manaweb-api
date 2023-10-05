@@ -8,6 +8,9 @@ export class SuggestionEntity {
     @Column({ name: 'suggestion', length: 200 })
     suggestion: string;
 
+    @Column({ name: 'email', length: 100 })
+    email: string;
+
     @Column({ name: 'create_date', default: () => 'CURRENT_TIMESTAMP' })
     create_date: Date;
 }
