@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
 import { LogService } from 'src/log/log.service';
+import { ApiResponse } from '@nestjs/swagger';
+import { CPResponse } from './response/cp.response';
 
 @Controller('/api/v1/calculator')
 export class CalculatorController {
@@ -8,6 +10,7 @@ export class CalculatorController {
     private readonly calculatorService: CalculatorService,
     ) {}
 
+  @ApiResponse({ type: CPResponse })
   @Get()
   async calculate(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
     return await this.calculatorService.calculate(price, percent, time, type);
@@ -41,7 +44,7 @@ export class CalculatorController {
             'totalPercent': totalPercent,
         });
       }
-    ``
+    
     return { priceArr, data };
   }
 }

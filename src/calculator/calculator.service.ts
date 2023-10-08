@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CPResponse } from './response/cp.response';
 
 @Injectable()
 export class CalculatorService {
@@ -7,7 +8,7 @@ export class CalculatorService {
     if (time <= 0 || price <= 0) return null;
 
     let priceArr = [price];
-    let data = new Array();
+    let data = new Array<CPResponse>();
     let totalRevenue = 0;
     for (let i = 1; i <= time; i++) {
       const beforePrice = +priceArr[i - 1];
@@ -18,12 +19,8 @@ export class CalculatorService {
       totalRevenue += revenue;
 
       priceArr.push(currentPrice);
-      data.push({
-        'tmp': i + type,
-        'revenue': revenue,
-        'currentPrice': currentPrice,
-        'totalPercent': totalPercent + '%',
-      });
+      const cpResponse = new CPResponse(i + type, revenue, currentPrice, totalPercent + '%');
+      data.push(cpResponse);
     }
 
     return { data, totalRevenue };
