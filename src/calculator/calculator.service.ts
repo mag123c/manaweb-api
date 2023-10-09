@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { CPResponse } from './response/cp.response';
 
 @Injectable()
@@ -17,6 +17,10 @@ export class CalculatorService {
       const revenue = currentPrice - beforePrice;
       const totalPercent = ((currentPrice - price) / (price / 100)).toFixed(2);
       totalRevenue += revenue;
+
+      if (revenue === Infinity || !Number(revenue) || currentPrice === Infinity) {
+        throw new BadRequestException();
+      }
 
       priceArr.push(currentPrice);
       const cpResponse = new CPResponse(i + type, revenue, currentPrice, totalPercent + '%');

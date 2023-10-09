@@ -6,12 +6,12 @@ export class LogController {
   constructor(private logService: LogService) {}
 
   @Post('/add-visit')
-  async addVisit(@Req() req, @Param() url: string) {
-    this.logService.addVisitLog(req, url);
+  async addVisit(@Req() req, @Body() body: { url: string }) {
+    this.logService.addVisitLog(req, body.url);
   }
 
   @Post('/calculate')
-  async addCalculate(@Param() url: string) {
-    this.logService.addCalculateLog(url);
+  async addCalculate(@Body() body: { url: string }) {
+    this.logService.addCalculateLog(body.url);
   }  
 }

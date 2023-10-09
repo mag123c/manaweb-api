@@ -11,8 +11,8 @@ export class SuggestionController {
    * @returns insert suggestion boolean
    */
   @Post()
-  async sendSuggestion(@Param() suggestion: string, @Param() email: string) {
-    return this.suggestionService.sendSuggestion(suggestion, email);
+  async sendSuggestion(@Body() body: { suggestion: string; email: string }) {
+    return this.suggestionService.sendSuggestion(body.suggestion, body.email);
   }
 
 }

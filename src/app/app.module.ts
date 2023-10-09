@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -9,6 +10,7 @@ import { UserVisitEntity } from 'src/log/entity/userVisit.entity';
 import { UserClickEntity } from 'src/log/entity/userClick.entity';
 import { SuggestionEntity } from 'src/suggestion/entity/suggestion.entity';
 import { SuggestionModule } from 'src/suggestion/suggestion.module';
+import { HttpExceptionFilter } from 'src/exception/expection.filter';
 
 @Module({
   imports: [
@@ -27,18 +29,22 @@ import { SuggestionModule } from 'src/suggestion/suggestion.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      timezone: process.env.TZ,
-      logging: true,
+      timezone: process.env.TZ,      logging: true,
       entities: [UserVisitEntity, UserClickEntity, SuggestionEntity],
       synchronize: false,
       })
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    }
+  ],
 })
-export class AppModule {}
-
+export class AppModule {
+}
 function getEnvFileName() {  
   let code = process.env.NODE_ENV;
   return code == 'dev' ?
