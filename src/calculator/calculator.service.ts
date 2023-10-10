@@ -18,7 +18,7 @@ export class CalculatorService {
       const totalPercent = ((currentPrice - price) / (price / 100)).toFixed(2);
       totalRevenue += revenue;
 
-      if (revenue === Infinity || !Number(revenue) || currentPrice === Infinity) {
+      if (revenue === Infinity || currentPrice === Infinity) {
         throw new BadRequestException();
       }
 
