@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get,Query } from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
-import { LogService } from 'src/log/log.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { CPResponse } from './response/cp.response';
 

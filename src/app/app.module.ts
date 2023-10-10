@@ -53,15 +53,4 @@ function getEnvFileName() {
   : code == 'production'
   ? '.env.production'
   : '.env';
-  return code == 'staging_prd'
-    ? '.env.staging_prd'
-    : code == 'staging'
-    ? '.env.staging'
-    : code == 'docker'
-    ? '.env.docker'
-    : code === 'dev'
-    ? '.env.dev'
-    : code === 'production'
-    ? '.env.production'
-    : '.env.test';
 }
