@@ -14,6 +14,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
   setupSwagger(app);
+  
   await app.listen(3065, () => {
     console.log('server running');
   });

@@ -29,7 +29,8 @@ import { HttpExceptionFilter } from 'src/exception/expection.filter';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      timezone: process.env.TZ,      logging: true,
+      timezone: '+09:00',
+      logging: true,
       entities: [UserVisitEntity, UserClickEntity, SuggestionEntity],
       synchronize: false,
       })
