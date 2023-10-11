@@ -10,9 +10,15 @@ export class CalculatorController {
     ) {}
 
   @ApiResponse({ type: CPResponse })
-  @Get()
-  async calculate(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
-    return await this.calculatorService.calculate(price, percent, time, type);
+  @Get('/cp')
+  async calculateCp(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
+    return await this.calculatorService.calculateCp(price, percent, time, type);
+  }
+
+  @ApiResponse({ type: CPResponse })
+  @Get('/military')
+  async calculateMilitary(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
+    return await this.calculatorService.calculateMilitary(price, percent, time, type);
   }
 
   @Get('/test')
