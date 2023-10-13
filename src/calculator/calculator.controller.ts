@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get,Query } from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
-import { LogService } from 'src/log/log.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { CPResponse } from './response/cp.response';
 
@@ -12,8 +11,14 @@ export class CalculatorController {
 
   @ApiResponse({ type: CPResponse })
   @Get('/cp')
-  async calculate(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
-    return await this.calculatorService.calculate(price, percent, time, type);
+  async calculateCp(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
+    return await this.calculatorService.calculateCp(price, percent, time, type);
+  }
+
+  @ApiResponse({ type: CPResponse })
+  @Get('/military')
+  async calculateMilitary(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
+    return await this.calculatorService.calculateMilitary(price, percent, time, type);
   }
 
   @Get('/test')
