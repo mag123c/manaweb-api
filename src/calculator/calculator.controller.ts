@@ -11,7 +11,7 @@ export class CalculatorController {
     ) {}
 
   @ApiResponse({ type: CPResponse })
-  @Get()
+  @Get('/cp')
   async calculate(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
     return await this.calculatorService.calculate(price, percent, time, type);
   }
