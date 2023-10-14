@@ -5,11 +5,12 @@ import { CPResponse } from './response/cp.response';
 export class CalculatorService {
 
   async calculateCp(price: number, percent: number, time: number, type: string) {
-    if (time <= 0 || price <= 0) return null;
+    if (Number(price) <= 0 || Number(percent) <= 0 || Number(time) <= 0) return null;
 
     let priceArr = [price];
     let data = new Array<CPResponse>();
     let totalRevenue = 0;
+
     for (let i = 1; i <= time; i++) {
       const beforePrice = +priceArr[i - 1];
       const interest = beforePrice * (+percent / 100);
