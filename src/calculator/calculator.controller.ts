@@ -2,6 +2,7 @@ import { Controller, Get,Query } from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { CPResponse } from './response/cp.response';
+import { MilitaryResponse } from './response/military.reponse';
 
 @Controller('/api/v1/calculator')
 export class CalculatorController {
@@ -15,10 +16,11 @@ export class CalculatorController {
     return await this.calculatorService.calculateCp(price, percent, time, type);
   }
 
-  @ApiResponse({ type: CPResponse })
+  @ApiResponse({ type: MilitaryResponse })
   @Get('/military')
-  async calculateMilitary(@Query('price') price: number, @Query('percent') percent: number, @Query('time') time: number, @Query('type') type: string) {
-    return await this.calculatorService.calculateMilitary(price, percent, time, type);
+  async calculateMilitary(@Query('enlistDay') enlistDay: string, @Query('months') months: number) {
+    console.log(enlistDay, months);
+    return await this.calculatorService.calculateMilitary(enlistDay, months);
   }
 
   @Get('/test')
