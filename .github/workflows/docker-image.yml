@@ -4,24 +4,34 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Login Dockerhub
-      env:
-        DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
-        DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
-      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD      
+      - name: 🛒 checkout
+        uses: actions/checkout@v3
 
-    - name: Build the Docker image
-      run: docker build -t manaweb-api .
+      - name: 🔑 Login Dockerhub
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD      
 
-    - name: taging
-      run: docker tag manaweb-api:latest mag123c/manaweb-api:latest
+      - name: 🔨 Build the Docker image
+        run: docker build -t manaweb-api .
 
-    - name: Push to Dockerhub
-      run: docker push mag123c/manaweb-api:latest
+      - name: 🏷️ taging
+        run: docker tag manaweb-api:latest mag123c/manaweb-api:latest
+
+      - name: 📤 Push to Dockerhub
+        run: docker push mag123c/manaweb-api:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: 📩 Pull Docker image
+        run: sudo docker pull mag123c/manaweb-api:latest
+      - name: ❌ Delete Old docker container
+        run: sudo docker rm -f manaweb-api-container || true
+      - name: 🏃🏿 Run Docker Container
+        run: sudo docker run -d -p 8080:3065 --name manaweb-api-container mag123c/manaweb-api        
