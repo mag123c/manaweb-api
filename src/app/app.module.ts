@@ -30,7 +30,8 @@ import { HttpExceptionFilter } from 'src/exception/expection.filter';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       useUTC: false,
-      logging: process.env.NODE_ENV == 'development',
+      logging: true,
+      // logging: process.env.NODE_ENV == 'development',
       entities: [UserVisitEntity, UserClickEntity, SuggestionEntity],
       synchronize: false,
       })
