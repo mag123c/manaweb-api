@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { setupSwagger } from './util/swagger.setup';
-import { HttpExceptionFilter } from './exception/expection.filter';
+import { ErrorsInterceptor } from './interceptor/exception.interceptor';
 
 async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
@@ -10,9 +10,9 @@ async function bootstrap() {
       cors: true,
       bufferLogs: true,
     }
-  );
+  );  
+  app.useGlobalInterceptors(new ErrorsInterceptor());
 
-  app.useGlobalFilters(new HttpExceptionFilter());
   setupSwagger(app);
   
   await app.listen(3065, () => {

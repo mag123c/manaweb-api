@@ -10,13 +10,16 @@ import { UserVisitEntity } from 'src/log/entity/userVisit.entity';
 import { UserClickEntity } from 'src/log/entity/userClick.entity';
 import { SuggestionEntity } from 'src/suggestion/entity/suggestion.entity';
 import { SuggestionModule } from 'src/suggestion/suggestion.module';
-import { HttpExceptionFilter } from 'src/exception/expection.filter';
+import { GlobalExceptionFilter } from 'src/exception/expection.filter';
+import { ErrorHistoryModule } from 'src/error/errorhistory.module';
+import { ErrorHistoryEntity } from 'src/error/entity/errorhistory.entity';
 
 @Module({
   imports: [
     CalculatorModule,
     LogModule,
     SuggestionModule,
+    ErrorHistoryModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFileName(),
@@ -32,7 +35,12 @@ import { HttpExceptionFilter } from 'src/exception/expection.filter';
       useUTC: false,
       logging: true,
       // logging: process.env.NODE_ENV == 'development',
-      entities: [UserVisitEntity, UserClickEntity, SuggestionEntity],
+      entities: [
+        UserVisitEntity,
+        UserClickEntity,
+        SuggestionEntity,
+        ErrorHistoryEntity
+      ],
       synchronize: false,
       })
     }),
@@ -41,7 +49,7 @@ import { HttpExceptionFilter } from 'src/exception/expection.filter';
   providers: [AppService,
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: GlobalExceptionFilter,
     }
   ],
 })

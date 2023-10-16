@@ -1,13 +1,24 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ErrorHistoryService } from 'src/error/errorhistory.service';
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+@Catch()
+export class GlobalExceptionFilter implements ExceptionFilter {
+  constructor(private errorService: ErrorHistoryService) {}
+  
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
+    let message = exception.response?.message || exception.message || 'UNKNOWN';
+    if (Array.isArray(message)) {
+      message = message.reduce((acc, mesa) => (acc += mesa + ','), '');
+    }
+
+    if(process.env.NODE_ENV === 'production') {
+      this.errorService.saveHistory(message, request?.url);
+    }
 
     response
       .status(status)
@@ -15,6 +26,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         statusCode: status,
         timestamp: new Date().toISOString(),
         path: request.url,
+        message,
       });
   }
 }
