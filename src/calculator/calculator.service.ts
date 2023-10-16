@@ -5,7 +5,9 @@ import { CPResponse } from './response/cp.response';
 export class CalculatorService {
 
   async calculateCp(price: number, percent: number, time: number, type: string) {
-    if (Number(price) <= 0 || Number(percent) <= 0 || Number(time) <= 0) return null;
+    if (Number(price) <= 0 || Number(percent) <= 0 || Number(time) <= 0) {
+      throw new BadRequestException('BadrequestException:: NPE');
+    }
 
     let priceArr = [price];
     let data = new Array<CPResponse>();
@@ -20,7 +22,7 @@ export class CalculatorService {
       totalRevenue += revenue;
 
       if (revenue === Infinity || currentPrice === Infinity) {
-        throw new BadRequestException();
+        throw new BadRequestException('BadRequestException:: Number cannot Infinity');
       }
 
       priceArr.push(currentPrice);
