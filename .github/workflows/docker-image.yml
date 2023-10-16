@@ -34,4 +34,8 @@ jobs:
       - name: ❌ Delete Old docker container
         run: sudo docker rm -f manaweb-api-container || true
       - name: 🏃🏿 Run Docker Container
-        run: sudo docker run -d -p 8080:3065 --name manaweb-api-container mag123c/manaweb-api        
+        run: sudo docker run -d -p 8080:3065 --name manaweb-api-container mag123c/manaweb-api
+      - name: ❌ Prune Old image
+        run: sudo docker image prune -f
+        
+  
