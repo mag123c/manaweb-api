@@ -13,6 +13,7 @@ import { SuggestionModule } from 'src/suggestion/suggestion.module';
 import { GlobalExceptionFilter } from 'src/exception/expection.filter';
 import { ErrorHistoryModule } from 'src/error/errorhistory.module';
 import { ErrorHistoryEntity } from 'src/error/entity/errorhistory.entity';
+import { ImitationModule } from 'src/investing/imitation/imitation.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ErrorHistoryEntity } from 'src/error/entity/errorhistory.entity';
     LogModule,
     SuggestionModule,
     ErrorHistoryModule,
+    ImitationModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFileName(),
