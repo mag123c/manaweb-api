@@ -33,14 +33,36 @@ export class CalculatorService {
     return { data, totalRevenue };
   }
 
-  async calculateMilitary(enlistDay: string, months: number) {
-    if (!enlistDay || !months) return null;
+  async military(enlistDay: string, months: number) {
+    if (!enlistDay || !months) throw new BadRequestException('BadrequestException:: NPE');
 
+    const calDischargeDate = await this.calculateDischargeDate(enlistDay, months);
+    const calRemainDay = await this.calculateRemainDay(calDischargeDate);
+
+    return { calDischargeDate, calRemainDay }
+  }
+
+  async calculateDischargeDate(enlistDay: string, months: number) {
     const enlistDayToDate = new Date(enlistDay);
     enlistDayToDate.setMonth(enlistDayToDate.getMonth() + months);
-    const remainDayData = enlistDayToDate.toISOString().slice(0, 10);
-    console.log(remainDayData);
-    return { remainDayData };
+    enlistDayToDate.setDate(enlistDayToDate.getDate() - 1);
+    
+    let year = enlistDayToDate.getFullYear();
+    let month = enlistDayToDate.getMonth() + 1; // 월은 0부터 시작하므로 +1을 해줍니다.
+    let day = enlistDayToDate.getDate();
+    
+    // month와 day가 한 자릿수인 경우, 앞에 0을 추가합니다.
+    const monthStr = month < 10 ? '0' + month : String(month);
+    const dayStr = day < 10 ? '0' + day : String(day);
+    
+    return year + "-" + monthStr + "-" + dayStr;    
+  }
+
+  async calculateRemainDay(dischargeDate: string) {
+    const enlistDate = new Date();
+    const remainDate = new Date(dischargeDate);
+    const diff = Math.abs(remainDate.getTime() - enlistDate.getTime());
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));     
   }
 }
 

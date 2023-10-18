@@ -23,7 +23,7 @@ export class CalculatorController {
   @Get('/military')
   async calculateMilitary(@Query('enlistDay') enlistDay: string, @Query('months') months: number) {
     console.log(enlistDay, months);
-    return await this.calculatorService.calculateMilitary(enlistDay, months);
+    return await this.calculatorService.military(enlistDay, months);
   }
 
   @ApiOperation({ description: '복리 계산기 테스트' })
