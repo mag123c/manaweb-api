@@ -4,7 +4,7 @@ import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ImitationResponse } from "./response/imitation.response";
 
 @ApiTags('investment')
-@Controller('/api/v1/investment/imiataion')
+@Controller('/api/v1/investment/imitation')
 export class ImitationController {
   constructor(private imitationService: ImitationService) {}
   
