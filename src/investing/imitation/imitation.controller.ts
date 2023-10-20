@@ -11,6 +11,6 @@ export class ImitationController {
   @Get('/test')
   @ApiResponse({ type: ImitationResponse })
   async test() {
-    await this.imitationService.test();
+    return await this.imitationService.test();
   }
 }
