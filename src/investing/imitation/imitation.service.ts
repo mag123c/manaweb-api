@@ -8,8 +8,7 @@ export class ImitationService {
 
     async test(turn: number) {
         const howManyGetData = 50 + (+turn);
-        console.log(howManyGetData);
-        const url = 'https://api.upbit.com/v1/candles/minutes/5?market=KRW-BTC&count=' + howManyGetData;
+        const url = 'https://api.upbit.com/v1/candles/minutes/240?market=KRW-BTC&count=' + howManyGetData;
         
         try {
             const response = await axios.get(url, { headers: { 'Accept-Encoding': 'gzip' } });
