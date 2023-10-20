@@ -1,6 +1,6 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ImitationService } from "./imitation.service";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ImitationResponse } from "./response/imitation.response";
 
 @ApiTags('investment')
@@ -10,7 +10,7 @@ export class ImitationController {
   
   @Get('/test')
   @ApiResponse({ type: ImitationResponse })
-  async test() {
-    return await this.imitationService.test();
+  async test(@Query('turn') turn: number) {
+    return await this.imitationService.test(turn);
   }
 }
