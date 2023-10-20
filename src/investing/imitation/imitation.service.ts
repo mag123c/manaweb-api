@@ -7,8 +7,9 @@ export class ImitationService {
     constructor(){}
 
     async test(turn: number) {
+        const randomDate = await this.randomDate();
         const howManyGetData = 50 + (+turn);
-        const url = 'https://api.upbit.com/v1/candles/minutes/240?market=KRW-BTC&count=' + howManyGetData;
+        const url = `https://api.upbit.com/v1/candles/minutes/240?market=KRW-BTC&to=${randomDate}&count=${howManyGetData}`;
         
         try {
             const response = await axios.get(url, { headers: { 'Accept-Encoding': 'gzip' } });
@@ -19,4 +20,16 @@ export class ImitationService {
             throw error; // Rethrow the error if needed
         }
     }
+
+    //api에는 2017.09.26부터 데이터 있음(UTC)
+    async randomDate() {
+        const startDate = new Date('2017-09-26').getTime();
+        const endDate = new Date().getTime();
+    
+        const randomDate = new Date(startDate + Math.random() * (endDate - startDate));
+        const formattedDate = randomDate.toISOString().split('T')[0] + 'T00:00:00Z';
+    
+        return formattedDate;
+    }
+    
 }
