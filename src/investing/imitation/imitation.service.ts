@@ -8,7 +8,7 @@ export class ImitationService {
 
     async test(turn: number) {
         const randomDate = await this.randomDate();
-        const howManyGetData = 50 + (+turn);
+        const howManyGetData = 100 + (+turn);
         const url = `https://api.upbit.com/v1/candles/minutes/240?market=KRW-BTC&to=${randomDate}&count=${howManyGetData}`;
         
         try {
