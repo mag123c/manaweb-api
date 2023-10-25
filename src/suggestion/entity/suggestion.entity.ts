@@ -11,6 +11,9 @@ export class SuggestionEntity {
     @Column({ name: 'email', length: 100 })
     email: string;
 
+    @Column({ name: 'read_tf', default: 0 })
+    read_tf: boolean;
+
     @Column({ name: 'create_date', default: () => 'CURRENT_TIMESTAMP' })
     create_date: Date;
 }

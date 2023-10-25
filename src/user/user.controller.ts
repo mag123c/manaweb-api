@@ -15,7 +15,7 @@ export class UserController {
   @ApiOperation({ description: 'signin' })
   @Post('signin')
   async sendSuggestion(@Body() body: { id: string; pw: string }) {
-    return this.userService.signin(body.id, body.pw);
+    return await this.userService.signin(body.id, body.pw);
   }
 
 }
