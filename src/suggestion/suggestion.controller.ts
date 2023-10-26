@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Put } from '@nestjs/common';
 import { SuggestionService } from './suggestion.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -16,6 +16,13 @@ export class SuggestionController {
   @Post()
   async sendSuggestion(@Body() body: { suggestion: string; email: string }) {
     return this.suggestionService.sendSuggestion(body.suggestion, body.email);
+  }
+
+  @ApiOperation({ description: '읽은 의견 삭제 - admin' })
+  @Put('read-true')
+  async readCheckSuggestion(@Body('no') no: number) {
+    console.log(no);
+    return this.suggestionService.readCheckSuggestion(no);
   }
 
 }

@@ -13,5 +13,10 @@ export class SuggestionService {
     async sendSuggestion(suggestion: string, email: string) {
         return this.suggestionRepository.save({ 'suggestion': suggestion, 'email': email });
     }
+
+    async readCheckSuggestion(no: number) {
+        console.log(no);
+        return this.suggestionRepository.update({ no: no }, { read_tf: true })
+    }
 }
 
