@@ -1,5 +1,5 @@
 import { createLogger, format, transports } from 'winston';
-import * as rotate from 'winston-daily-rotate-file';
+import rotate from 'winston-daily-rotate-file';
 import { now } from '../util/DateUtil';
 
 const jsonFormatter = format.printf((logEntry) => {

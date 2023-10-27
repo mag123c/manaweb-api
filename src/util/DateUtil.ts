@@ -1,4 +1,4 @@
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 moment.tz.setDefault('Asia/Seoul');
 export const now = () => {
   return moment.utc(moment().format('YYYY-MM-DDTHH:mm:ss')).toDate();

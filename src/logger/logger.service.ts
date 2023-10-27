@@ -1,6 +1,6 @@
 import { Global, Injectable, Scope } from '@nestjs/common';
 import winston, { createLogger, format, Logger, transports } from 'winston';
-import * as rotate from 'winston-daily-rotate-file';
+import rotate from 'winston-daily-rotate-file';
 
 @Injectable({
   scope: Scope.TRANSIENT,

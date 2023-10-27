@@ -15,15 +15,28 @@ import { ErrorHistoryModule } from 'src/error/errorhistory.module';
 import { ErrorHistoryEntity } from 'src/error/entity/errorhistory.entity';
 import { ImitationModule } from 'src/investing/imitation/imitation.module';
 import { UserModule } from 'src/user/user.module';
+import { SendbirdUserModule } from 'src/sendbird/user/sendbird.user.module';
+import { SendbirdMessageModule } from 'src/sendbird/message/sendbird.message.module';
+import { SendbirdChannelModule } from 'src/sendbird/channel/sendbird.channel.module';
+
 
 @Module({
   imports: [
+    //business
     CalculatorModule,
-    LogModule,
-    SuggestionModule,
-    ErrorHistoryModule,
     ImitationModule,
+    SuggestionModule,
     UserModule,
+
+    //logging && history
+    ErrorHistoryModule,
+    LogModule,   
+
+    //sendbird test version
+    SendbirdUserModule,
+    SendbirdMessageModule,
+    SendbirdChannelModule,
+
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFileName(),
