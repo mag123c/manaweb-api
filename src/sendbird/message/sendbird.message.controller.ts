@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Put } fr
 import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SendbirdMessageService } from './sendbird.message.service';
 import { SendbirdTextMsgDto } from './entity/dto/sendbird.message.dto';
-import { channel } from 'diagnostics_channel';
 import { SendbirdBadRequestResponse400201 } from '../entity/resopnse/sendbird.error.response';
 
 @ApiTags('sendbird')
