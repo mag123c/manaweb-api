@@ -8,7 +8,7 @@ export class SendbirdChannelService {
     API_TOKEN: string;
     serverConfig: sendbird.ServerConfiguration<{app_id: string}>;
     configuration: sendbird.Configuration;
-    openChannelAPI: sendbird.OpenChannelApi;
+    sendbirdAPI: sendbird.GroupChannelApi;
 
     constructor(
         private readonly configService: ConfigService,
@@ -17,10 +17,26 @@ export class SendbirdChannelService {
         this.API_TOKEN = this.configService.get('SENDBIRD_API_TOKEN');
         this.serverConfig = new sendbird.ServerConfiguration(`https://api-${this.APP_ID}.sendbird.com`, { "app_id": this.APP_ID });
         this.configuration = sendbird.createConfiguration({ baseServer: this.serverConfig });
-        this.openChannelAPI = new sendbird.OpenChannelApi(this.configuration);
+        this.sendbirdAPI = new sendbird.GroupChannelApi(this.configuration);
     }
 
-    async openChannel(name: string, url: string, cover_url: string, ) {
+    async createChannel() {
+        try {
+            const channel = await this.sendbirdAPI.gcCreateChannel(this.API_TOKEN, { userIds: ['test1'], operatorIds: ['admin'] });
+            console.log(channel.channel)
+            return channel.channel;
+        } catch (error) {
+            throw new sendbird.HttpException('createChannel');
+        }        
+    }
 
+    async getChannelList() {
+        try {
+            const channelList = await this.sendbirdAPI.gcListChannels(this.API_TOKEN);
+            console.log(channelList);
+            return channelList;
+        } catch (error) {
+            throw new sendbird.HttpException('getChannelList');
+        }
     }
 }

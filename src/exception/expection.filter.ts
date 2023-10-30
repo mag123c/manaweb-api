@@ -4,7 +4,9 @@ import { ErrorHistoryService } from 'src/error/errorhistory.service';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  constructor(private errorService: ErrorHistoryService) {}
+  constructor(
+    // private errorHistoryService: ErrorHistoryService,
+  ) {}
   
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -16,9 +18,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = message.reduce((acc, mesa) => (acc += mesa + ','), '');
     }
 
-    if(process.env.NODE_ENV === 'production') {
-      this.errorService.saveHistory(message, request?.url);
-    }
+    // if(process.env.NODE_ENV === 'production') {
+    //   this.errorService.saveHistory(message, request?.url);
+    // }
 
     response
       .status(status)

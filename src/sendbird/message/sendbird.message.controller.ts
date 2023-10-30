@@ -1,14 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Put } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SendbirdMessageService } from './sendbird.message.service';
-import { ConfigService } from '@nestjs/config';
+import { SendbirdTextMsgDto } from './entity/dto/sendbird.message.dto';
+import { channel } from 'diagnostics_channel';
+import { SendbirdBadRequestResponse400201 } from '../entity/resopnse/sendbird.error.response';
 
 @ApiTags('sendbird')
-@Controller('/api/v1/sendbird/channel')
+@Controller('/api/v1/sendbird/message')
 export class SendbirdMessageController {
   constructor
     (
       private sendbirdMessageService: SendbirdMessageService,
     ){}
 
+    @ApiOperation({ description: '메세지 전송' })
+    @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
+    @Put('/sendMsg')
+    async sendTextMsg(@Body() body: { messageDto: SendbirdTextMsgDto, channel_url: string } ) {
+      const { messageDto, channel_url } = body;
+      console.log(channel_url);
+      return await this.sendbirdMessageService.sendTextMsg(messageDto, channel_url);
+    }
 }

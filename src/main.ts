@@ -3,6 +3,7 @@ import { AppModule } from './app/app.module';
 import { setupSwagger } from './util/swagger.setup';
 import { ErrorsInterceptor } from './interceptor/exception.interceptor';
 import expressBasicAuth from 'express-basic-auth';
+import { GlobalExceptionFilter } from './exception/expection.filter';
 
 async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
@@ -11,8 +12,11 @@ async function bootstrap() {
       cors: true,
       bufferLogs: true,
     }
-  );  
+  );
+
   app.useGlobalInterceptors(new ErrorsInterceptor());
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
   app.use( //이 부분 추가
     ['/swagger/swagger-ui'], // docs(swagger end point)에 진입시
     expressBasicAuth({
