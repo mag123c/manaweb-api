@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import sendbird from 'sendbird-platform-sdk-typescript';
+import * as sendbird from 'sendbird-platform-sdk-typescript';
 import { ConfigService } from '@nestjs/config';
 import { SendbirdTextMsgDto } from './entity/dto/sendbird.message.dto';
 

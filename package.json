@@ -38,7 +38,7 @@
     "mysql2": "^3.6.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "sendbird-platform-sdk-typescript": "file:../sendbird-platform-sdk-typescript-main",
+    "sendbird-platform-sdk-typescript": "^0.0.18",
     "typeorm": "^0.3.17",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1"
