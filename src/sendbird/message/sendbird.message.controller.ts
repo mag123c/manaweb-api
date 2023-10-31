@@ -16,8 +16,13 @@ export class SendbirdMessageController {
     @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
     @Put('/sendMsg')
     async sendTextMsg(@Body() body: { messageDto: SendbirdTextMsgDto, channel_url: string } ) {
-      const { messageDto, channel_url } = body;
-      console.log(channel_url);
-      return await this.sendbirdMessageService.sendTextMsg(messageDto, channel_url);
+      try {
+        const { messageDto, channel_url } = body;
+        console.log(channel_url);
+        return await this.sendbirdMessageService.sendTextMsg(messageDto, channel_url);
+      }
+      catch (error) {
+        throw new SendbirdBadRequestResponse400201('[api::sendMsg] // channel');
+      }
     }
 }

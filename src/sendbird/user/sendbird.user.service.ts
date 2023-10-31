@@ -22,7 +22,7 @@ export class SendbirdUserService {
     }
 
     /**
-     * 
+     * 유저 리스트 조회
      */
     async userList() {
         try {
@@ -52,6 +52,17 @@ export class SendbirdUserService {
             return user;
         } catch(error) {
             throw new sendbird.HttpException('createUser');
+        }
+    }
+
+    async createToken(userId: string) {
+        try {
+            //expiresAt : 1hours (단위::mils)
+            const token = await this.sendbirdAPI.createUserToken(this.API_TOKEN, userId, { expiresAt: 1000 * 60 * 60 })
+            console.log(token);
+            return token
+        } catch(error) {
+            throw new sendbird.HttpException('accessToken');
         }
     }
 }

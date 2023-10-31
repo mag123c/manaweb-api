@@ -4,7 +4,6 @@ export class SendbirdBadRequestResponse400104 {
     code: 400104;
     error: true;
 }
-
 //userList get Error
 export class SendbirdBadRequestResponse400105 {
     message: "\"metadatakey\" must be required.";
@@ -19,9 +18,17 @@ export class SendbirdBadRequestResponse400111 {
     error: true;
 }
 
-//MsgSend Error
+//User, Channel NF Error
 export class SendbirdBadRequestResponse400201 {
-    message: "\"Channel\" not found.";
-    code: 400201;
-    error: true;
+    params: string;
+    message: string;
+    code: number;
+    error: boolean;
+
+    constructor(params: string) {
+        this.params = params;
+        this.message = params ? `${this.params} not found.` : 'User or Channel not found';
+        this.code = 400201;
+        this.error = true;
+    }
 }

@@ -19,24 +19,36 @@ export class SendbirdChannelService {
         this.configuration = sendbird.createConfiguration({ baseServer: this.serverConfig });
         this.sendbirdAPI = new sendbird.GroupChannelApi(this.configuration);
     }
+    //채널 목록 조회
+    async getChannelList(userId: string) {
+        try {            
+            const channelList = await this.sendbirdAPI.gcListChannels(this.API_TOKEN, userId);
+            console.log(channelList);
+            return channelList;
+        } catch (error) {
+            throw new sendbird.HttpException('getChannelList');
+        }
+    }
 
-    async createChannel() {
+    //채널 만들기(임시::관리자문의)
+    async createChannel(userId: string) {
+        const userIds = [userId, 'admin'];
         try {
-            const channel = await this.sendbirdAPI.gcCreateChannel(this.API_TOKEN, { userIds: ['test1'], operatorIds: ['admin'] });
-            console.log(channel.channel)
+            const channel = await this.sendbirdAPI.gcCreateChannel(this.API_TOKEN, { userIds, isDistinct: true });
+            console.log(channel)
             return channel.channel;
         } catch (error) {
             throw new sendbird.HttpException('createChannel');
         }        
     }
 
-    async getChannelList() {
+    //채팅방 입장 시 해당 채팅방 정보
+    async getChannelByUrl(channelUrl: string) {
         try {
-            const channelList = await this.sendbirdAPI.gcListChannels(this.API_TOKEN);
-            console.log(channelList);
-            return channelList;
+           const channel = await this.sendbirdAPI.gcViewChannelByUrl(this.API_TOKEN, channelUrl, true, true);
+           console.log(channel);
         } catch (error) {
-            throw new sendbird.HttpException('getChannelList');
+            throw new sendbird.HttpException('getChannelByUrl');
         }
     }
 }
