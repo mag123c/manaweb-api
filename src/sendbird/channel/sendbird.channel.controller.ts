@@ -15,10 +15,12 @@ export class SendbirdChannelController {
     }
 
     @ApiOperation({ description: '그룹채널 리스트 조회' })
-    @Get('/channelList')
+    @Post('/channelList')
+    // @Get('/channelList')
     @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
-    @ApiQuery({ name: 'userId', example: 'test1', type: 'string' })
-    async getchannelList(@Query() userId: string) {
+    // @ApiQuery({ name: 'userId', example: 'test1', type: 'string' })
+    async getchannelList(@Body() body: { userId: string }) {
+      const { userId } = body;
       try {
         return await this.sendbirdChannelService.getChannelList(userId);
       } catch(error) {
@@ -36,12 +38,11 @@ export class SendbirdChannelController {
       return await this.sendbirdChannelService.createChannel(userId);
     }
 
-    @ApiOperation({ description: '그룹채널 생성' })
-    @ApiOkResponse({ type: SendbirdCreateChannelResponse })
+    @ApiOperation({ description: '관리자 문의 채널 열기(생성 >> 임의 메세지 1개 셋팅)' })
     @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
-    @Post('/createToken')
-    async createToken(@Body() body: { userId: string }) {
+    @Post('/initChannel')
+    async initChannel(@Body() body: { userId: string }) {
       const { userId } = body;
-      return await this.sendbirdChannelService.createChannel(userId);
+      return await this.sendbirdChannelService.initChannel(userId);
     }
 }

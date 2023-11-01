@@ -29,4 +29,11 @@ export class SendbirdUserController {
     console.log(createUserDto);
     return this.sendbirdUserSerivce.createUser(createUserDto);
   }
+
+  @ApiOperation({ description: '토큰 발급' })
+  @Post('/createToken')
+  async createToken(@Body() body: { userId: string }) {
+    const { userId } = body;
+    return await this.sendbirdUserSerivce.createToken(userId);
+  }
 }
