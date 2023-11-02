@@ -21,7 +21,7 @@ export class SendbirdMessageService {
         this.sendbirdAPI = new sendbird.MessageApi(this.configuration);
     }
 
-    async sendTextMsg (messageDto: SendbirdTextMsgDto, channel_url: string) {        
+    async sendTextMsg (messageDto: SendbirdTextMsgDto, channel_url: string) {      
         try {
             console.log(channel_url);
             const { message_type, user_id, message } = messageDto;

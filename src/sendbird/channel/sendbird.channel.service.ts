@@ -35,7 +35,7 @@ export class SendbirdChannelService {
 
     //채널 만들기(임시::관리자문의)
     async createChannel(userId: string) {
-        const userIds = [userId, 'admin'];
+        const userIds = [userId, '아이웨딩'];
         try {
             const channel = await this.sendbirdAPI.gcCreateChannel(this.API_TOKEN, { userIds, isDistinct: true });
             return channel.channel;
@@ -60,7 +60,7 @@ export class SendbirdChannelService {
         const { channelUrl } = channel;
         const dto:SendbirdTextMsgDto = {
             message_type: "MESG",
-            user_id: "admin",
+            user_id: "아이웨딩",
             message: "안녕하세요? 무엇을 도와드릴까요?"
         }
         return await this.sendbirdMsgService.sendTextMsg(dto, channelUrl);
