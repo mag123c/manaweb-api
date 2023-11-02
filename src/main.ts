@@ -4,6 +4,7 @@ import { setupSwagger } from './util/swagger.setup';
 import { ErrorsInterceptor } from './interceptor/exception.interceptor';
 import expressBasicAuth from 'express-basic-auth';
 import { GlobalExceptionFilter } from './exception/expection.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
@@ -16,6 +17,15 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ErrorsInterceptor());
   app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  require('dotenv').config();
 
   app.use( //이 부분 추가
     ['/swagger/swagger-ui'], // docs(swagger end point)에 진입시

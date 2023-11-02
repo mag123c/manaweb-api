@@ -7,15 +7,5 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  /**
-   * 
-   * @param suggestion
-   * @returns insert suggestion boolean
-   */
-  @ApiOperation({ description: 'signin' })
-  @Post('signin')
-  async sendSuggestion(@Body() body: { id: string; pw: string }) {
-    return await this.userService.signin(body.id, body.pw);
-  }
 
 }

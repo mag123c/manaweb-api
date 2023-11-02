@@ -18,6 +18,8 @@ import { UserModule } from 'src/user/user.module';
 import { SendbirdUserModule } from 'src/sendbird/user/sendbird.user.module';
 import { SendbirdMessageModule } from 'src/sendbird/message/sendbird.message.module';
 import { SendbirdChannelModule } from 'src/sendbird/channel/sendbird.channel.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 
 @Module({
@@ -27,6 +29,7 @@ import { SendbirdChannelModule } from 'src/sendbird/channel/sendbird.channel.mod
     ImitationModule,
     SuggestionModule,
     UserModule,
+    AuthModule,
 
     //logging && history
     ErrorHistoryModule,
@@ -40,6 +43,11 @@ import { SendbirdChannelModule } from 'src/sendbird/channel/sendbird.channel.mod
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFileName(),
+      // validationSchema: Joi.object({
+      //   //…
+      //   JWT_SECRET: Joi.string().required(),
+      //   JWT_EXPIRATION_TIME: Joi.string().required(),
+      // }),
     }),
     TypeOrmModule.forRootAsync({      
       useFactory: () => ({
@@ -56,7 +64,8 @@ import { SendbirdChannelModule } from 'src/sendbird/channel/sendbird.channel.mod
         UserVisitEntity,
         UserClickEntity,
         SuggestionEntity,
-        ErrorHistoryEntity
+        ErrorHistoryEntity,
+        UserEntity,
       ],
       synchronize: false,
       })

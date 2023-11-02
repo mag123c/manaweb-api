@@ -2,7 +2,7 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/co
 import { Request, Response } from 'express';
 import { ErrorHistoryService } from 'src/error/errorhistory.service';
 
-@Catch()
+@Catch(HttpException)
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(
     // private errorHistoryService: ErrorHistoryService,

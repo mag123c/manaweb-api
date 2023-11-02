@@ -25,4 +25,15 @@ export class SuggestionController {
     return this.suggestionService.readCheckSuggestion(no);
   }
 
+    /**
+   * suggestion check (nav) :: not in DB
+   * @param suggestion
+   * @returns insert suggestion boolean
+   */
+    @ApiOperation({ description: 'signin' })
+    @Post('signin')
+    async suggestionSignin(@Body() body: { id: string; pw: string }) {
+      return await this.suggestionService.suggestionSignin(body.id, body.pw);
+    }
+
 }
