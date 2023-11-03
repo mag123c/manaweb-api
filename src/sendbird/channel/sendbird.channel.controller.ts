@@ -43,7 +43,6 @@ export class SendbirdChannelController {
     @Post('/initChannel')
     async initChannel(@Body() body: { userId: string }) {
       const { userId } = body;
-      console.log(userId);
       return await this.sendbirdChannelService.initChannel(userId);
     }
 }

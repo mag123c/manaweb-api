@@ -20,6 +20,7 @@ import { SendbirdMessageModule } from 'src/sendbird/message/sendbird.message.mod
 import { SendbirdChannelModule } from 'src/sendbird/channel/sendbird.channel.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { SendbirdChatbotModule } from 'src/sendbird/chatbot/sendbird.chatbot.module';
 
 
 @Module({
@@ -39,6 +40,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
     SendbirdUserModule,
     SendbirdMessageModule,
     SendbirdChannelModule,
+    SendbirdChatbotModule,
 
     ConfigModule.forRoot({
       isGlobal: true,
