@@ -9,7 +9,7 @@ export class SendbirdMessageService {
     API_TOKEN: string;
     serverConfig: sendbird.ServerConfiguration<{app_id: string}>;
     configuration: sendbird.Configuration;
-    sendbirdAPI: sendbird.MessageApi;
+    messageApi: sendbird.MessageApi;
 
     constructor(
         private readonly configService: ConfigService,
@@ -18,19 +18,29 @@ export class SendbirdMessageService {
         this.API_TOKEN = this.configService.get('SENDBIRD_API_TOKEN');
         this.serverConfig = new sendbird.ServerConfiguration(`https://api-${this.APP_ID}.sendbird.com`, { "app_id": this.APP_ID });
         this.configuration = sendbird.createConfiguration({ baseServer: this.serverConfig });
-        this.sendbirdAPI = new sendbird.MessageApi(this.configuration);
+        this.messageApi = new sendbird.MessageApi(this.configuration);
     }
 
     async sendTextMsg (messageDto: SendbirdTextMsgDto, channel_url: string) {      
         try {
             console.log(channel_url);
             const { message_type, user_id, message } = messageDto;
-            const msgSend = await this.sendbirdAPI.sendMessage(this.API_TOKEN, 'group_channels', channel_url,
+            const msgSend = await this.messageApi.sendMessage(this.API_TOKEN, 'group_channels', channel_url,
                 { messageType: message_type, userId: user_id, message: message, customType: 'html', isSilent: true, }
             )
             return msgSend;
         } catch(error) {
             throw new sendbird.HttpException('sendTextMsg');
+        }
+    }
+
+    async getMsg() {
+        try {            
+            const msg = await this.messageApi.listMessages(this.API_TOKEN, 'group_channels', 'sendbird_group_channel_132276856_8dfd8be8ec15d3630b0e3782ad868afcd4af8219', '1484208113351')
+            console.log(msg);
+            return msg;
+        } catch(error) {
+            throw new sendbird.HttpException('getMsg');
         }
     }
 }

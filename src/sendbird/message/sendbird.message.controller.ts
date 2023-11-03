@@ -12,9 +12,9 @@ export class SendbirdMessageController {
       private sendbirdMessageService: SendbirdMessageService,
     ){}
 
+    @Put('/sendMsg')
     @ApiOperation({ description: '메세지 전송' })
     @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
-    @Put('/sendMsg')
     async sendTextMsg(@Body() body: { messageDto: SendbirdTextMsgDto, channel_url: string } ) {
       try {
         const { messageDto, channel_url } = body;
@@ -24,5 +24,11 @@ export class SendbirdMessageController {
       catch (error) {
         throw new SendbirdBadRequestResponse400201('[api::sendMsg] // channel');
       }
+    }
+
+    @Get('/msg')
+    @ApiOperation({ description: '메세지 조회' })
+    async getMsg() {
+      return this.sendbirdMessageService.getMsg();
     }
 }

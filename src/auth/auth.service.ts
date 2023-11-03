@@ -53,7 +53,6 @@ export class AuthService {
 
     //access token 발급
     createToken(user: UserEntity): JwtTokenDto {
-        console.log(user);
         return new JwtTokenDto(this.createAccessToken(user), this.createRefreshToken(user.no));
     }
 

@@ -3,12 +3,12 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.stragety';
 import { JwtStrategy } from './strategy/jwt.stragety';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Module({
   imports: [
@@ -22,6 +22,9 @@ import { JwtStrategy } from './strategy/jwt.stragety';
         signOptions: { expiresIn: config.get<string>('expiresIn') },
       })
     }),
+    TypeOrmModule.forFeature([
+      UserEntity,
+    ])
   ],
   providers: [
     AuthService,

@@ -5,6 +5,7 @@ import { ErrorsInterceptor } from './interceptor/exception.interceptor';
 import expressBasicAuth from 'express-basic-auth';
 import { GlobalExceptionFilter } from './exception/expection.filter';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
@@ -15,6 +16,7 @@ async function bootstrap() {
     }
   );
 
+  app.use(cookieParser());
   app.useGlobalInterceptors(new ErrorsInterceptor());
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalPipes(

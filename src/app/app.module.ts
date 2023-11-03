@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -21,6 +21,7 @@ import { SendbirdChannelModule } from 'src/sendbird/channel/sendbird.channel.mod
 import { AuthModule } from 'src/auth/auth.module';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { SendbirdChatbotModule } from 'src/sendbird/chatbot/sendbird.chatbot.module';
+import Joi from 'joi';
 
 
 @Module({
@@ -45,11 +46,11 @@ import { SendbirdChatbotModule } from 'src/sendbird/chatbot/sendbird.chatbot.mod
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnvFileName(),
-      // validationSchema: Joi.object({
-      //   //…
-      //   JWT_SECRET: Joi.string().required(),
-      //   JWT_EXPIRATION_TIME: Joi.string().required(),
-      // }),
+      validationSchema: Joi.object({
+        //…
+        JWT_SECRET: Joi.string().required(),
+        expiresIn: Joi.string().required(),
+      }),
     }),
     TypeOrmModule.forRootAsync({      
       useFactory: () => ({
@@ -78,7 +79,7 @@ import { SendbirdChatbotModule } from 'src/sendbird/chatbot/sendbird.chatbot.mod
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
-    }
+    },
   ],
 })
 export class AppModule {
