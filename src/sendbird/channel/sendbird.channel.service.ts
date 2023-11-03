@@ -35,7 +35,7 @@ export class SendbirdChannelService {
 
     //채널 만들기(임시::관리자문의)
     async createChannel(userId: string) {
-        const userIds = [userId, '아이웨딩'];
+        const userIds = ['아이웨딩', userId];
         try {
             const channel = await this.sendbirdAPI.gcCreateChannel(this.API_TOKEN, { userIds, isDistinct: true });
             return channel.channel;
