@@ -4,6 +4,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { SuggestionEntity } from 'src/suggestion/entity/suggestion.entity';
 import { UserEntity } from './entity/user.entity';
+import { AuthService } from 'src/auth/auth.service';
 
 
 @Module({
@@ -12,7 +13,8 @@ import { UserEntity } from './entity/user.entity';
   providers: [UserService],
   imports: [TypeOrmModule.forFeature([
     UserEntity
-  ])]
+  ]),
+]
 })
 
 export class UserModule {}

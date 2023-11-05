@@ -11,10 +11,14 @@ async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
   const app = await NestFactory.create(AppModule,
     {
-      cors: true,
-      bufferLogs: true,
+      bufferLogs: true,      
     }
   );
+
+  app.enableCors({
+    origin: ['https://mananaweb.net', 'http://localhost:3000'],
+    credentials: true,    
+  })
 
   app.use(cookieParser());
   app.useGlobalInterceptors(new ErrorsInterceptor());

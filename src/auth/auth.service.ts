@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException, Response } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { UserSigninDto } from './dto/signin.dto';
@@ -15,7 +15,7 @@ export class AuthService {
         private jwtService: JwtService,
         private configService: ConfigService,
         private datasource: DataSource
-    ) { }
+    ) {}
     async signup(signInDto: UserSigninDto) {
         //typeorm transaction start
         const queryRunner = this.datasource.createQueryRunner();
@@ -30,14 +30,14 @@ export class AuthService {
             else {
                 const hashedPassword = this.hash(signInDto.pw);
 
-                const valiUser = new UserEntity();                
+                const valiUser = new UserEntity();
                 valiUser.id = signInDto.id;
                 valiUser.pw = hashedPassword;
 
-                const savedUser = await this.userService.saveUser(valiUser);                
-                const delPwUserData = this.removePasswordFromUserData(savedUser);               
+                const savedUser = await this.userService.saveUser(valiUser);
+                const delPwUserData = this.removePasswordFromUserData(savedUser);
 
-                const token = this.createToken(delPwUserData)                
+                const token = this.createToken(delPwUserData)
                 await queryRunner.commitTransaction();
 
                 return token;
@@ -53,7 +53,12 @@ export class AuthService {
 
     //access token 발급
     createToken(user: UserEntity): JwtTokenDto {
-        return new JwtTokenDto(this.createAccessToken(user), this.createRefreshToken(user.no));
+        console.log(user);
+        const no = user.no;
+        const tokenDto = new JwtTokenDto(this.createAccessToken(user), this.createRefreshToken(no));
+        console.log(tokenDto);
+        this.setCurrentRefreshToken(tokenDto.refresh_token, no);        
+        return tokenDto;
     }
 
     //로그인 시 pw validate
@@ -79,6 +84,14 @@ export class AuthService {
         }
     }
 
+    async signout(user: UserEntity) {
+        await this.userService.removeRefreshToken(user.no);
+        return [
+            'Authentication=; HttpOnly; Path=/; Max-Age=0',
+            'Refresh=; HttpOnly; Path=/; Max-Age=0'
+        ];
+    }
+
     hash(origin: string | number): string {
         return Md5.init(origin);
     }
@@ -94,10 +107,21 @@ export class AuthService {
 
     createAccessToken(user: UserEntity) {
         const cu = { no: user.no, id: user.id };
-        return this.jwtService.sign(cu, { expiresIn: this.configService.get('expiresIn') });
+        return this.jwtService.sign(cu, {
+            secret: this.configService.get('JWT_SECRET'),
+            expiresIn: this.configService.get('expiresIn')
+        });
     }
 
     createRefreshToken(no: number) {
-        return this.jwtService.sign({ no }, { expiresIn: this.configService.get('expiresInRefresh') });
+        return this.jwtService.sign({ no }, {
+            secret: this.configService.get('JWT_SECERT'),
+            expiresIn: this.configService.get('expiresInRefresh')
+        });
+    }
+
+    setCurrentRefreshToken(refreshToken: string, no: number) {
+        const currentHashedRefreshToken = this.hash(refreshToken);
+        this.userService.updateRefreshToken(no, currentHashedRefreshToken);
     }
 }

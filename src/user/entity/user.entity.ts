@@ -8,11 +8,14 @@ export class UserEntity {
     @Column({ name: 'id', length: 20, unique: true })
     id: string;
 
-    @Column({ name: 'pw', length: 20 })
+    @Column({ name: 'pw'})
     pw: string;
 
-    @Column({ name: 'api_key', nullable: true})
-    api_key: boolean;
+    @Column({ name: 'refresh_token' })
+    refresh_token: string;
+
+    @Column({ name: 'last_join_date'})
+    last_join_date: Date;
 
     @Column({ name: 'create_date', default: () => 'CURRENT_TIMESTAMP' })
     create_date: Date;

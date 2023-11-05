@@ -22,6 +22,9 @@ import { AuthModule } from 'src/auth/auth.module';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { SendbirdChatbotModule } from 'src/sendbird/chatbot/sendbird.chatbot.module';
 import Joi from 'joi';
+import { PnlModule } from 'src/investing/my/pnl.module';
+import { PnlUserEntity } from 'src/investing/my/entity/pnl_user.entity';
+import { PnlUserProfitEntity } from 'src/investing/my/entity/pnl_user_profit.entity';
 
 
 @Module({
@@ -32,6 +35,7 @@ import Joi from 'joi';
     SuggestionModule,
     UserModule,
     AuthModule,
+    PnlModule,
 
     //logging && history
     ErrorHistoryModule,
@@ -62,13 +66,15 @@ import Joi from 'joi';
       database: process.env.DB_NAME,
       useUTC: false,
       logging: true,
-      // logging: process.env.NODE_ENV == 'development',
+      // logging: process.env.NODE_ENV == 'dev',
       entities: [
         UserVisitEntity,
         UserClickEntity,
         SuggestionEntity,
         ErrorHistoryEntity,
         UserEntity,
+        PnlUserEntity,
+        PnlUserProfitEntity,
       ],
       synchronize: false,
       })

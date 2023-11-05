@@ -11,7 +11,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       algorithms: ['HS256'],
       secretOrKey: configService.get('JWT_SECRET'),
-      usernameField: 'id', passwordField: 'pw',
     });
   }
 
