@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserInvestmentDataEntity } from "./user-investment.entity";
 
 @Entity({ name: 'user', database: 'mananaweb'})
 export class UserEntity {
@@ -22,4 +23,7 @@ export class UserEntity {
 
     @Column({ name: 'update_date', default: () => 'CURRENT_TIMESTAMP' })
     update_date: Date;
+
+    @OneToMany(() => UserInvestmentDataEntity, (investment) => investment.user, { cascade: true })
+    profits: UserInvestmentDataEntity[];
 }

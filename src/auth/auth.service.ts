@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException, Response } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException, Response, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { UserSigninDto } from './dto/signin.dto';
@@ -7,6 +7,8 @@ import { Md5 } from 'md5-typescript';
 import { JwtTokenDto } from './dto/jwt-token.dto';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
+import CurrentUser from './dto/currentUser.dto';
+import { ref } from 'joi';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +18,21 @@ export class AuthService {
         private configService: ConfigService,
         private datasource: DataSource
     ) {}
+
+    //validate for stragety
+    async validateUser(id: string, password: string): Promise<any> {
+        const user = await this.userService.findById(id);
+        if (!user) {
+            throw new UnauthorizedException('가입된 유저가 아닙니다.');
+        }
+        if (user && (await this.isMatch(password, user.pw))) {
+            delete user.pw;
+            return user;
+        } else {
+            throw new BadRequestException('패스워드를 확인해주세요');
+        }
+    }
+
     async signup(signInDto: UserSigninDto) {
         //typeorm transaction start
         const queryRunner = this.datasource.createQueryRunner();
@@ -51,14 +68,58 @@ export class AuthService {
 
     }
 
+    //로그아웃
+    async signout(user: UserEntity) {
+        await this.userService.removeRefreshToken(user.no);
+        return 'Authentication=; HttpOnly; Path=/; Max-Age=0';
+    }
+
     //access token 발급
-    createToken(user: UserEntity): JwtTokenDto {
-        console.log(user);
+    createToken(user: UserEntity) {
         const no = user.no;
         const tokenDto = new JwtTokenDto(this.createAccessToken(user), this.createRefreshToken(no));
-        console.log(tokenDto);
-        this.setCurrentRefreshToken(tokenDto.refresh_token, no);        
+        this.setCurrentRefreshToken(tokenDto.refresh_token, no);
         return tokenDto;
+    }
+
+    //refresh >> access token재발급
+    async verifyRefreshToken(cookies: string) {
+        const refreshToken = this.getCookieForString(cookies, 'refreshToken');
+
+        try {
+            //유효성 검사
+            const validate = await this.jwtService.verifyAsync(
+                refreshToken,
+                {
+                    secret: this.configService.get('JWT_SECRET'),
+                },
+            );
+
+            //토큰 번역
+            const decode = await this.jwtService.decode(refreshToken) as any;
+            if(decode && decode.no) {
+                const user = await this.userService.findByNo(decode.no);
+                return this.createAccessToken(user);
+            } else {
+                throw new UnauthorizedException('token validate fail');
+            }
+        } catch (error) {
+            console.error(error);
+            throw new UnauthorizedException(error.toString())
+        }
+
+
+    }
+
+    getCookieForString(cookies: string, cookieName: string) {
+        const cookieSplit = cookies.split(';');
+        for (const cookie of cookieSplit) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === cookieName) {
+                return decodeURIComponent(value);
+            }
+        }
+        throw new BadRequestException('cookieName notfound');
     }
 
     //로그인 시 pw validate
@@ -70,27 +131,7 @@ export class AuthService {
         return null;
     }
 
-    //validate for stragety
-    async validateUser(id: string, password: string): Promise<any> {
-        const user = await this.userService.findById(id);
-        if (!user) {
-            throw new UnauthorizedException('가입된 유저가 아닙니다.');
-        }
-        if (user && (await this.isMatch(password, user.pw))) {
-            delete user.pw;
-            return user;
-        } else {
-            throw new BadRequestException('패스워드를 확인해주세요');
-        }
-    }
 
-    async signout(user: UserEntity) {
-        await this.userService.removeRefreshToken(user.no);
-        return [
-            'Authentication=; HttpOnly; Path=/; Max-Age=0',
-            'Refresh=; HttpOnly; Path=/; Max-Age=0'
-        ];
-    }
 
     hash(origin: string | number): string {
         return Md5.init(origin);

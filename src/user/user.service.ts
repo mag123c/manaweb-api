@@ -8,11 +8,13 @@ import { Md5 } from 'md5-typescript';
 
 @Injectable()
 export class UserService {
-
     constructor(
         @InjectRepository(UserEntity)
         private userRepository: Repository<UserEntity>,
-    ) { }
+    ) {}
+    async findByNo(no: number) {
+        return await this.userRepository.findOneBy({ no: no });
+    }
 
     async findById(id: string) {
         return await this.userRepository.findOneBy({ id: id })
@@ -26,8 +28,8 @@ export class UserService {
         return await this.userRepository.update(no, { refresh_token: currentHashedRefreshToken })
     }
 
-    async refreshTokenMatches(refreshToken: string, no: number) {
-        const user = await this.userRepository.findOneBy({ no: no });
+    async refreshTokenMatches(refreshToken: string, id: string) {
+        const user = await this.findById(id);
 
         const isMatches = this.isMatch(refreshToken, user.refresh_token);
         if (isMatches) return user;

@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { SuggestionEntity } from 'src/suggestion/entity/suggestion.entity';
 import { UserEntity } from './entity/user.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { UserInvestmentDataEntity } from './entity/user-investment.entity';
 
 
 @Module({
@@ -12,7 +13,8 @@ import { AuthService } from 'src/auth/auth.service';
   exports: [UserService],
   providers: [UserService],
   imports: [TypeOrmModule.forFeature([
-    UserEntity
+    UserEntity,
+    UserInvestmentDataEntity,
   ]),
 ]
 })

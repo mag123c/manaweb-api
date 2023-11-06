@@ -10,7 +10,6 @@ export class SendbirdChatbotController {
     @Get('bots')
     @ApiOperation({ description: 'list' })
     async getBotList() {
-        console.log('test')
         return this.sendbirdChatbotService.getBotList();
     }
 }

@@ -9,6 +9,7 @@ import { Jwt } from 'src/decorator/CurrentUserDecorator';
 import CurrentUser from './dto/currentUser.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { RefreshAuthGuard } from './guard/refresh-auth.guard';
 
 @ApiTags('auth')
 @Controller('/api/v1/auth')
@@ -20,7 +21,6 @@ export class AuthController {
     @ApiResponse({ status: 201, description: '가입 성공시 JWT_TOKEN을 발급합니다.', type: JwtTokenDto })
     async signup(@Body() signInDto: UserSigninDto) {
         const data = await this.authService.signup(signInDto);
-        console.log(data);
         return data;
     }
 
@@ -31,20 +31,22 @@ export class AuthController {
     signin(@Request() req) {  
         return this.authService.createToken(req.user);
     }
-
-    @Get('/refresh')
-    @UseGuards(AuthGuard('jwt-refresh-token'))
-    @ApiOperation({ description: '토큰 재발급' })
-    async getProfile(@Jwt() user: CurrentUser) {
-        return user;
-    }
-
+    
     @Post('/signout')
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ description: '로그아웃' })
     async logout(@Request() req) {
         return await this.authService.signout(req.user);
+    }
 
+    @Post('/refresh')
+    // @UseGuards(RefreshAuthGuard)
+    @ApiOperation({ description: '토큰 재발급' })
+    async refreshToken(@Request() req) {
+        const cookies = req.headers.cookie;
+        const accessToken = await this.authService.verifyRefreshToken(cookies);
+        const returnUrl = req.headers.referer;
+        return { accessToken, returnUrl }
     }
 
     @Get('/dev')

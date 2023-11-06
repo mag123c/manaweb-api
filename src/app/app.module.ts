@@ -25,6 +25,7 @@ import Joi from 'joi';
 import { PnlModule } from 'src/investing/my/pnl.module';
 import { PnlUserEntity } from 'src/investing/my/entity/pnl_user.entity';
 import { PnlUserProfitEntity } from 'src/investing/my/entity/pnl_user_profit.entity';
+import { UserInvestmentDataEntity } from 'src/user/entity/user-investment.entity';
 
 
 @Module({
@@ -75,6 +76,7 @@ import { PnlUserProfitEntity } from 'src/investing/my/entity/pnl_user_profit.ent
         UserEntity,
         PnlUserEntity,
         PnlUserProfitEntity,
+        UserInvestmentDataEntity,
       ],
       synchronize: false,
       })

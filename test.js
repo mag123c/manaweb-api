@@ -8,7 +8,6 @@ const query = '?token=e091cf239c7eaf295b2caf3f06a9d8e5b5fa4a40&limit=3&metadatak
 async function test () {
     try {
         const result = await axios.get(url + query);
-        console.log(result.data);
     } catch (e) {
         console.error(e)
     }       
