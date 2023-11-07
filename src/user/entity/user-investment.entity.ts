@@ -40,15 +40,9 @@ export class UserInvestmentDataEntity {
     @Column()
     profit_percent: number;
 
-    @ApiProperty({ description: 'import' })
-    @Column()
-    import: number;
-
-
     @ApiProperty({ description: 'export' })
     @Column()
-    export: number;
-
+    withdrawl: number;
 
     @Column("datetime", { name: "create_date", default: () => "CURRENT_TIMESTAMP" })
     @Column()
