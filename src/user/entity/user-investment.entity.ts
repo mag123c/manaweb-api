@@ -6,7 +6,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UserInvestmentDataEntity {
     @ApiProperty({ description: 'no' })
     @PrimaryGeneratedColumn()
-    id: number;
+    no: number;
 
     @ApiProperty({ description: 'user_no' })
     @Column()
@@ -15,6 +15,14 @@ export class UserInvestmentDataEntity {
     @ManyToOne(() => UserEntity, { eager: true })
     @JoinColumn({ name: 'user_no', referencedColumnName: 'no' })
     user: UserEntity;
+
+    @ApiProperty({ description: 'yyyymm' })
+    @Column()
+    yyyymm: string;
+
+    @ApiProperty({ description: 'day' })
+    @Column()
+    day: number;
 
     @ApiProperty({ description: 'start_price' })
     @Column()

@@ -28,8 +28,8 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @ApiOperation({ description: '로그인' })
     @ApiResponse({ status: 200, description: 'JWT_TOKEN을 발급합니다.', type: JwtTokenDto })
-    signin(@Request() req) {  
-        return this.authService.createToken(req.user);
+    signin(@Request() req) {
+        return this.authService.signin(req.user);
     }
     
     @Post('/signout')

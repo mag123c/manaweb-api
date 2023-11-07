@@ -7,8 +7,6 @@ import { Md5 } from 'md5-typescript';
 import { JwtTokenDto } from './dto/jwt-token.dto';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
-import CurrentUser from './dto/currentUser.dto';
-import { ref } from 'joi';
 
 @Injectable()
 export class AuthService {
@@ -17,21 +15,7 @@ export class AuthService {
         private jwtService: JwtService,
         private configService: ConfigService,
         private datasource: DataSource
-    ) {}
-
-    //validate for stragety
-    async validateUser(id: string, password: string): Promise<any> {
-        const user = await this.userService.findById(id);
-        if (!user) {
-            throw new UnauthorizedException('가입된 유저가 아닙니다.');
-        }
-        if (user && (await this.isMatch(password, user.pw))) {
-            delete user.pw;
-            return user;
-        } else {
-            throw new BadRequestException('패스워드를 확인해주세요');
-        }
-    }
+    ) { }
 
     async signup(signInDto: UserSigninDto) {
         //typeorm transaction start
@@ -68,6 +52,17 @@ export class AuthService {
 
     }
 
+    async signin(user: UserEntity) {
+        //1. user validate with hashed pw        
+        if (this.validateUser) {
+            user.last_join_date = new Date();
+            const signinDateUpdate = this.userService.updateSignin(user);
+
+            //1-2. when validated >> token created
+            if (signinDateUpdate) return this.createToken(user);
+        }        
+    }
+
     //로그아웃
     async signout(user: UserEntity) {
         await this.userService.removeRefreshToken(user.no);
@@ -80,6 +75,20 @@ export class AuthService {
         const tokenDto = new JwtTokenDto(this.createAccessToken(user), this.createRefreshToken(no));
         this.setCurrentRefreshToken(tokenDto.refresh_token, no);
         return tokenDto;
+    }
+
+    //validate for stragety
+    async validateUser(id: string, password: string): Promise<any> {
+        const user = await this.userService.findById(id);
+        if (!user) {
+            throw new UnauthorizedException('가입된 유저가 아닙니다.');
+        }
+        if (user && (await this.isMatch(password, user.pw))) {
+            delete user.pw;
+            return user;
+        } else {
+            throw new BadRequestException('패스워드를 확인해주세요');
+        }
     }
 
     //refresh >> access token재발급
@@ -97,7 +106,7 @@ export class AuthService {
 
             //토큰 번역
             const decode = await this.jwtService.decode(refreshToken) as any;
-            if(decode && decode.no) {
+            if (decode && decode.no) {
                 const user = await this.userService.findByNo(decode.no);
                 return this.createAccessToken(user);
             } else {

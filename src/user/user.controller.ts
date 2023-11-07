@@ -17,10 +17,13 @@ export class UserController {
     return req.user;
   }
 
-
-  @Get('/log/:params')
+  @Get('/myInvestmentData')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '투자내역 조회' })
-  async getInvestmentLog(@Jwt() cu: CurrentUser, @Param() param: string) {
-    console.log(cu);    
-  }
+  async getInvestmentDataByYyyyMm(@Jwt() cu: CurrentUser, @Query('yyyymm') yyyymm: string) {
+    console.log(yyyymm);
+    const a = await this.userService.getInvestmentDataByYyyyMm(cu.no, yyyymm);
+    console.log(a);
+    return a;
+  }  
 }
