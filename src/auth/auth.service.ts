@@ -38,7 +38,8 @@ export class AuthService {
                 const savedUser = await this.userService.saveUser(valiUser);
                 const delPwUserData = this.removePasswordFromUserData(savedUser);
 
-                const token = this.createToken(delPwUserData)
+                const token = this.createToken(delPwUserData);
+                await this.userService.updateSignin(savedUser);
                 await queryRunner.commitTransaction();
 
                 return token;
