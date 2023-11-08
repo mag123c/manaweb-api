@@ -54,14 +54,14 @@ export class UserService {
         return await this.userInvestmentDataRepository.findOneBy({ user_no: userNo, yyyymm: yyyymm, day: day });
     }
 
-    async updateInvestmentDataByDay(entity: UserInvestmentDataEntity) {
+    async updateInvestmentDataByDay(entity: UserInvestmentDataEntity): Promise<UpdateResult> {
         return await this.userInvestmentDataRepository.update(entity.no, entity);
     }
     //단순 DB로직 끝
 
     //JWT 관련 로직
-    async refreshTokenMatches(refreshToken: string, id: string): Promise<UserEntity> {
-        const user = await this.findById(id);
+    async refreshTokenMatches(refreshToken: string, no: number): Promise<UserEntity> {
+        const user = await this.findByNo(no);
 
         const isMatches = this.isMatch(refreshToken, user.refresh_token);
         if (isMatches) return user;
@@ -100,9 +100,11 @@ export class UserService {
             existData.end_price = +endPrice;
             existData.profit = profit;
             existData.profit_percent = profitPercent;
+            existData.memo = memo;
             existData.update_date = new Date();
 
-            return await this.updateInvestmentDataByDay(existData);
+            await this.updateInvestmentDataByDay(existData);
+            return existData;
         }
 
         else {

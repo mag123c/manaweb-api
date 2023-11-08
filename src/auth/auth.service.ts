@@ -140,8 +140,6 @@ export class AuthService {
         return null;
     }
 
-
-
     hash(origin: string | number): string {
         return Md5.init(origin);
     }
@@ -150,8 +148,9 @@ export class AuthService {
         return Md5.init(userInput) == hashed;
     }
 
-    removePasswordFromUserData(savedUser: UserEntity) {
+    removePasswordFromUserData(savedUser: UserEntity, text?: string) {
         delete savedUser.pw;
+        if (text === 'refresh') delete savedUser.refresh_token;        
         return savedUser;
     }
 

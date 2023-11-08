@@ -28,7 +28,7 @@ export class UserController {
   @Put('/myInvestmentData')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '투자내역 입력(by day) '})
-  async putInvestmentData(@Jwt() cu: CurrentUser, @Body() userInvDataPutDto: UserInvestmentDataPutDto) {    
+  async putInvestmentData(@Jwt() cu: CurrentUser, @Body() userInvDataPutDto: UserInvestmentDataPutDto) {
     return await this.userService.putInvestmentData(cu.no, userInvDataPutDto);
   }
 }

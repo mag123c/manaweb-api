@@ -10,6 +10,7 @@ import CurrentUser from './dto/currentUser.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { RefreshAuthGuard } from './guard/refresh-auth.guard';
+import { UserEntityBuilder } from 'src/user/builder/user.builder';
 
 @ApiTags('auth')
 @Controller('/api/v1/auth')
@@ -40,13 +41,14 @@ export class AuthController {
     }
 
     @Post('/refresh')
-    // @UseGuards(RefreshAuthGuard)
+    @UseGuards(RefreshAuthGuard)
     @ApiOperation({ description: '토큰 재발급' })
-    async refreshToken(@Request() req) {
-        const cookies = req.headers.cookie;
-        const accessToken = await this.authService.verifyRefreshToken(cookies);
-        const returnUrl = req.headers.referer;
-        return { accessToken, returnUrl }
+    async refreshToken(@Request() req) {        
+        const accessToken = await this.authService.createAccessToken(req.user);
+        const user = new UserEntityBuilder()
+            .withNo(req.user.no)
+            .withId(req.user.id)        
+        return { accessToken, user };
     }
 
     @Get('/dev')
