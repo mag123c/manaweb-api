@@ -1,10 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Md5 } from 'md5-typescript';
 import { UserInvestmentDataEntity } from './entity/user-investment.entity';
+import UserInvestmentDataPutDto from './dto/user-investmentData.dto';
+import { UserInvestmentDataEntityBuilder } from './builder/user-investment.builder';
 
 
 @Injectable()
@@ -35,7 +37,27 @@ export class UserService {
     async updateRefreshToken(no: number, currentHashedRefreshToken: string): Promise<UpdateResult> {
         return await this.userRepository.update(no, { refresh_token: currentHashedRefreshToken })
     }
-    //단순 DB로직
+
+    async getInvestmentDataByMonth(userNo: number, yyyymm: string): Promise<UserInvestmentDataEntity[]> {
+        return await this.userInvestmentDataRepository.createQueryBuilder()
+            .where('user_no = :userNo', { userNo })
+            .andWhere('yyyymm = :yyyymm', { yyyymm })
+            .orderBy('day', 'ASC')
+            .getMany();
+    }
+
+    async putInvestmentDataByDay(entity: UserInvestmentDataEntity): Promise<UserInvestmentDataEntity>  {
+        return await this.userInvestmentDataRepository.save(entity);
+    }
+
+    async findInvestemtDataByUserNoAndDay(userNo: number, yyyymm: string, day: number) {
+        return await this.userInvestmentDataRepository.findOneBy({ user_no: userNo, yyyymm: yyyymm, day: day });
+    }
+
+    async updateInvestmentDataByDay(entity: UserInvestmentDataEntity) {
+        return await this.userInvestmentDataRepository.update(entity.no, entity);
+    }
+    //단순 DB로직 끝
 
     //JWT 관련 로직
     async refreshTokenMatches(refreshToken: string, id: string): Promise<UserEntity> {
@@ -53,17 +75,62 @@ export class UserService {
         return Md5.init(userInput) == hashed;
     }
     //JWT 관련 로직 끝
-    
+
 
     //비즈니스 로직
     //1. 내 투자 정보 월별 조회
     async getInvestmentDataByYyyyMm(no: number, yyyymm: string) {
         if (!yyyymm) throw new BadRequestException('날짜 형식 에러');
 
-        return await this.userInvestmentDataRepository.createQueryBuilder()
-            .where('user_no = :no', {no})
-            .andWhere('yyyymm = :yyyymm', {yyyymm})
-            .orderBy('day', 'ASC')
-            .getMany();
+        return await this.getInvestmentDataByMonth(no, yyyymm);
     }
+
+    //2. 일일 투자 정보 입력
+    async putInvestmentData(no: number, userInvDataPutDto: UserInvestmentDataPutDto) {
+        const user = await this.findByNo(no);
+        if (!user) throw new UnauthorizedException('로그인 후 이용해 주세요.')
+        const { startPrice, endPrice, memo, yyyymm, day } = userInvDataPutDto;
+
+        const profit = this.calculateProfit(+startPrice, +endPrice);
+        const profitPercent = this.calculateProfitPercent(+startPrice, profit);
+
+        const existData = await this.findInvestemtDataByUserNoAndDay(no, yyyymm, +day);
+        if(existData) {
+            existData.start_price = +startPrice;
+            existData.end_price = +endPrice;
+            existData.profit = profit;
+            existData.profit_percent = profitPercent;
+            existData.update_date = new Date();
+
+            return await this.updateInvestmentDataByDay(existData);
+        }
+
+        else {
+            const entity = this.investmentDataEntityBuild(no, +startPrice, +endPrice, memo, yyyymm, +day, profit, profitPercent)
+        
+            return await this.putInvestmentDataByDay(entity);
+        }
+    }
+
+    calculateProfit(startPrice: number, endPrice: number) {
+        return endPrice - startPrice;
+    }
+
+    calculateProfitPercent(startPrice: number, profit: number) {
+        return Math.round(((profit) / (startPrice / 100))) + '%';
+    }
+
+    investmentDataEntityBuild(no: number, startPrice: number, endPrice: number, memo: string, yyyymm: string, day: number, profit: number, profitPercent: string) {
+        return new UserInvestmentDataEntityBuilder()
+            .withUserNo(no)
+            .withYyyymm(yyyymm)
+            .withDay(day)
+            .withStartPrice(startPrice)
+            .withEndPrice(endPrice)
+            .withProfit(profit)
+            .withProfitPercent(profitPercent)
+            .withMemo(memo)
+            .build();
+    }
+
 }

@@ -38,17 +38,18 @@ export class UserInvestmentDataEntity {
 
     @ApiProperty({ description: 'profit_percent' })
     @Column()
-    profit_percent: number;
+    profit_percent: string;
 
-    @ApiProperty({ description: 'export' })
+    @ApiProperty({ description: 'memo' })
     @Column()
-    withdrawl: number;
+    memo: string;
 
     @Column("datetime", { name: "create_date", default: () => "CURRENT_TIMESTAMP" })
     @Column()
-    create_date: string;
+    create_date: Date;
 
     @Column("datetime", { name: "update_date", default: () => "CURRENT_TIMESTAMP" })
     @Column()
-    update_date: string;
+    update_date: Date;
+
 }
