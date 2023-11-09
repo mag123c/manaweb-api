@@ -86,7 +86,10 @@ export class UserService {
     async getInvestmentDataByYyyyMm(no: number, yyyymm: string) {
         if (!yyyymm) throw new BadRequestException('날짜 형식 에러');
 
-        return await this.getInvestmentDataByMonth(no, yyyymm);
+        const data = await this.getInvestmentDataByMonth(no, yyyymm);
+        const totalProfit = this.calculateTotalProfit(data);
+
+        return { data, totalProfit }
     }
 
     //2. 일일 투자 정보 입력
@@ -130,6 +133,10 @@ export class UserService {
 
     calculateProfitPercent(startPrice: number, profit: number) {
         return Math.round(((profit) / (startPrice / 100))) + '%';
+    }
+    
+    calculateTotalProfit(data: UserInvestmentDataEntity[]) {
+        return data.reduce((totalProfit, item) => totalProfit + item.profit, 0);
     }
 
     investmentDataEntityBuild(no: number, startPrice: number, endPrice: number, memo: string, yyyymm: string, day: number, profit: number, profitPercent: string) {
