@@ -31,4 +31,12 @@ export class UserController {
   async putInvestmentData(@Jwt() cu: CurrentUser, @Body() userInvDataPutDto: UserInvestmentDataPutDto) {
     return await this.userService.putInvestmentData(cu.no, userInvDataPutDto);
   }
+
+  @Delete('/myInvestmentData/:yyyymm/:day')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '투자내역 초기화(day)' })
+  async deleteInvestmentData(@Jwt() cu: CurrentUser, @Param() params) {
+    const { yyyymm, day } = params;
+    return await this.userService.deleteInvestmentData(cu.no, yyyymm, day)
+  }
 }

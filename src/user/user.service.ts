@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Md5 } from 'md5-typescript';
 import { UserInvestmentDataEntity } from './entity/user-investment.entity';
@@ -46,7 +46,7 @@ export class UserService {
             .getMany();
     }
 
-    async putInvestmentDataByDay(entity: UserInvestmentDataEntity): Promise<UserInvestmentDataEntity>  {
+    async putInvestmentDataByDay(entity: UserInvestmentDataEntity): Promise<UserInvestmentDataEntity> {
         return await this.userInvestmentDataRepository.save(entity);
     }
 
@@ -56,6 +56,10 @@ export class UserService {
 
     async updateInvestmentDataByDay(entity: UserInvestmentDataEntity): Promise<UpdateResult> {
         return await this.userInvestmentDataRepository.update(entity.no, entity);
+    }
+
+    async deleteInvestmentDataByDay(no: number): Promise<DeleteResult> {
+        return await this.userInvestmentDataRepository.delete(no);
     }
     //단순 DB로직 끝
 
@@ -95,7 +99,7 @@ export class UserService {
         const profitPercent = this.calculateProfitPercent(+startPrice, profit);
 
         const existData = await this.findInvestemtDataByUserNoAndDay(no, yyyymm, +day);
-        if(existData) {
+        if (existData) {
             existData.start_price = +startPrice;
             existData.end_price = +endPrice;
             existData.profit = profit;
@@ -109,9 +113,15 @@ export class UserService {
 
         else {
             const entity = this.investmentDataEntityBuild(no, +startPrice, +endPrice, memo, yyyymm, +day, profit, profitPercent)
-        
+
             return await this.putInvestmentDataByDay(entity);
         }
+    }
+
+    //3. 삭제
+    async deleteInvestmentData(no: number, yyyymm: string, day: string) {
+        const exists = await this.findInvestemtDataByUserNoAndDay(no, yyyymm, +day);
+        return this.deleteInvestmentDataByDay(exists.no);
     }
 
     calculateProfit(startPrice: number, endPrice: number) {
