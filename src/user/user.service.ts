@@ -99,7 +99,7 @@ export class UserService {
         const { startPrice, endPrice, memo, yyyymm, day } = userInvDataPutDto;
 
         const profit = this.calculateProfit(+startPrice, +endPrice);
-        const profitPercent = this.calculateProfitPercent(+startPrice, profit);
+        const profitPercent = profit === 0 ? '0%' : this.calculateProfitPercent(+startPrice, profit);
 
         const existData = await this.findInvestemtDataByUserNoAndDay(no, yyyymm, +day);
         if (existData) {
