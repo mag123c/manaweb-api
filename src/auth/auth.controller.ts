@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Request, Res, Response, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
@@ -10,6 +10,7 @@ import { RefreshAuthGuard } from './guard/refresh-auth.guard';
 import { UserEntityBuilder } from 'src/user/builder/user.builder';
 
 @ApiTags('auth')
+@ApiBearerAuth('accessToken')
 @Controller('/api/v1/auth')
 export class AuthController {
     constructor(private authService: AuthService) { }

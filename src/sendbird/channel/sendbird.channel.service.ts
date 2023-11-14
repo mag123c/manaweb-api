@@ -75,9 +75,7 @@ export class SendbirdChannelService {
             const ibot = await this.chatbotAPI.joinChannels(this.API_TOKEN, this.IBOT_ID, {
                 channelUrls: [channelUrl],
                 botUserid: ''
-            });
-            console.log(ibot);
-
+            })
             const msg = await this.chatbotAPI.sendBotsMessage(this.API_TOKEN, this.IBOT_ID, {
                 message: 'test',
                 channelUrl: channelUrl,

@@ -23,10 +23,27 @@ export class SendbirdMessageService {
 
     async sendTextMsg (messageDto: SendbirdTextMsgDto, channel_url: string) {      
         try {
-            console.log(channel_url);
             const { message_type, user_id, message } = messageDto;
+            // const data = [
+            //     {
+            //         title: '카드 1',
+            //         description: '카드 1에 대한 설명',
+            //         imageUrl: 'http://daum.net',
+            //       },
+            //       {
+            //         title: '카드 2',
+            //         description: '카드 2에 대한 설명',
+            //         imageUrl: 'http://naver.com',
+            //       },
+            // ];
+            const meta_data = [{
+                font_preference: "times new roman",
+                font_color: "black",
+                background_color: "red",                
+            }]
             const msgSend = await this.messageApi.sendMessage(this.API_TOKEN, 'group_channels', channel_url,
-                { messageType: message_type, userId: user_id, message: message, customType: 'html', isSilent: true, }
+                { messageType: message_type, userId: user_id, message: message, isSilent: true,
+                 data: JSON.stringify(meta_data) }
             )
             return msgSend;
         } catch(error) {

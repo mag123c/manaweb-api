@@ -17,7 +17,7 @@ export function setupSwagger(app: INestApplication): void {
       bearerFormat: "JWT",
       in: "header",
     },
-    'token' //컨트롤러 토큰 검증 (해당 이름 사용해서)
+    'accessToken'
     )
     .build();
 
