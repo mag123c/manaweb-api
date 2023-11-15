@@ -66,6 +66,8 @@ import { UserInvestmentDataEntity } from 'src/user/entity/user-investment.entity
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       useUTC: false,
+      timezone: 'Z',
+      dateStrings: true,
       logging: process.env.NODE_ENV == 'dev',
       entities: [
         UserVisitEntity,

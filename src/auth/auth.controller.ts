@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Request, Res, Response, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
@@ -26,6 +26,7 @@ export class AuthController {
     @Post('/signin')
     @UseGuards(LocalAuthGuard)
     @ApiOperation({ description: '로그인' })
+    @ApiParam({ type: UserSigninDto, name: '로그인 DTO'})
     @ApiResponse({ status: 200, description: 'JWT_TOKEN을 발급합니다.', type: JwtTokenDto })
     signin(@Request() req) {
         return this.authService.signin(req.user);
