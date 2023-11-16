@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from 'src/common/exception/expection.filter';
-import { DevAppModule } from 'src/devweb/app/app.module';
-import { MananawebAppModule } from 'src/mananaweb/app/app.module';
+import { DevAppController } from './app.controller';
+import { DevAppService } from './app.service';
 
 
 @Module({
-    imports: [
-        MananawebAppModule,
-        DevAppModule,
-    ],
-    providers: [
+    imports: [],
+    controllers: [DevAppController],    
+    providers: [DevAppService,
         {
             provide: APP_FILTER,
             useClass: GlobalExceptionFilter,
@@ -18,6 +16,6 @@ import { MananawebAppModule } from 'src/mananaweb/app/app.module';
     ],
 })
 
-export class AppModule {
+export class DevAppModule {
 }
 

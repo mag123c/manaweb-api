@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import { setupSwagger } from './util/swagger.setup';
-import { ErrorsInterceptor } from './interceptor/exception.interceptor';
+import { setupSwagger } from './common/util/swagger.setup';
+import { ErrorsInterceptor } from './common/interceptor/exception.interceptor';
 import expressBasicAuth from 'express-basic-auth';
-import { GlobalExceptionFilter } from './exception/expection.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { GlobalExceptionFilter } from './common/exception/expection.filter';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -16,8 +16,15 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: ['https://mananaweb.net', 'http://localhost:3000'],
+    origin: ['https://mananaweb.net', 'http://localhost:3000', 'https://dev.mananaweb.net'],
     credentials: true,    
+  })
+
+  //API 경로 접두어 및 버전관리
+  app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
   })
 
   app.use(cookieParser());
