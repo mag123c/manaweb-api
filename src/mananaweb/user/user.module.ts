@@ -6,6 +6,7 @@ import { SuggestionEntity } from 'src/mananaweb/suggestion/entity/suggestion.ent
 import { UserEntity } from './entity/user.entity';
 import { AuthService } from 'src/mananaweb/auth/auth.service';
 import { UserInvestmentDataEntity } from './entity/user-investment.entity';
+import { UserInvestmentLeaderBoardEntity } from './entity/user-investment-leaderboard.entity';
 
 
 @Module({
@@ -15,6 +16,7 @@ import { UserInvestmentDataEntity } from './entity/user-investment.entity';
   imports: [TypeOrmModule.forFeature([
     UserEntity,
     UserInvestmentDataEntity,
+    UserInvestmentLeaderBoardEntity
   ]),
 ]
 })

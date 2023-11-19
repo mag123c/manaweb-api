@@ -10,6 +10,7 @@ import { JwtStrategy } from './strategy/jwt.stragety';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/mananaweb/user/entity/user.entity';
 import { RefreshStrategy } from './strategy/refresh.strategy';
+import { VisitorStrategy } from './strategy/visitor.strategy';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { RefreshStrategy } from './strategy/refresh.strategy';
     LocalStrategy,
     JwtStrategy,
     RefreshStrategy,
+    VisitorStrategy,
   ],
   controllers: [AuthController],
   exports: [AuthService],

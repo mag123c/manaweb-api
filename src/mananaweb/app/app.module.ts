@@ -26,6 +26,7 @@ import { PnlModule } from 'src/mananaweb/investing/my/pnl.module';
 import { PnlUserEntity } from 'src/mananaweb/investing/my/entity/pnl_user.entity';
 import { PnlUserProfitEntity } from 'src/mananaweb/investing/my/entity/pnl_user_profit.entity';
 import { UserInvestmentDataEntity } from 'src/mananaweb/user/entity/user-investment.entity';
+import { UserInvestmentLeaderBoardEntity } from '../user/entity/user-investment-leaderboard.entity';
 
 
 @Module({
@@ -68,7 +69,8 @@ import { UserInvestmentDataEntity } from 'src/mananaweb/user/entity/user-investm
       useUTC: false,
       timezone: 'Z',
       dateStrings: true,
-      logging: process.env.NODE_ENV == 'dev',
+      logging: false,
+      // logging: process.env.NODE_ENV == 'dev',
       entities: [
         UserVisitEntity,
         UserClickEntity,
@@ -78,6 +80,7 @@ import { UserInvestmentDataEntity } from 'src/mananaweb/user/entity/user-investm
         PnlUserEntity,
         PnlUserProfitEntity,
         UserInvestmentDataEntity,
+        UserInvestmentLeaderBoardEntity,
       ],
       synchronize: false,
       })
