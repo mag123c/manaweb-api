@@ -79,8 +79,8 @@ export class UserService {
         return await this.userInvestmentDataRepository.delete(no);
     }
 
-    async truncateInvData() {
-        return await this.userInvestmentDataRepository.clear();
+    async deleteInvDataByUserNo(userNo: number) {
+        return await this.userInvestmentDataRepository.delete({ user_no: userNo });
     }
 
     async findAllLeaderBoard() {
@@ -97,8 +97,8 @@ export class UserService {
         return await this.userInvestmentLeaderBoardRepository.save(entity);
     }
 
-    async truncateLeaderBoard() {
-        return await this.userInvestmentLeaderBoardRepository.clear();
+    async deleteLeaderBoardByUserNo(userNo: number) {
+        return await this.userInvestmentLeaderBoardRepository.delete({ user_no: userNo });
     }
     //단순 DB로직 끝
 
@@ -228,7 +228,7 @@ export class UserService {
 
     //데이터 전체 초기화
     async initData(no: number) {
-        return await (this.truncateInvData(), this.truncateLeaderBoard());
+        return await (this.deleteInvDataByUserNo(no), this.deleteLeaderBoardByUserNo(no));
     }
 
     // async getTotalProfitFromInvData(data: UserInvestmentDataEntity[]): Promise<number> {
