@@ -84,8 +84,9 @@ export class UserService {
     }
 
     async findAllLeaderBoard() {
-        return await this.userInvestmentLeaderBoardRepository.find({select:
-            { nickname: true, start_price: true, total_profit: true, total_profit_percent: true }
+        return await this.userInvestmentLeaderBoardRepository.find({
+            select:
+                { nickname: true, start_price: true, total_profit: true, total_profit_percent: true }
         });
     }
 
@@ -99,6 +100,10 @@ export class UserService {
 
     async deleteLeaderBoardByUserNo(userNo: number) {
         return await this.userInvestmentLeaderBoardRepository.delete({ user_no: userNo });
+    }
+
+    async updateLeaderBoardByEntity(leaderBoardNo: number, entity: UserInvestmentLeaderBoardEntity) {
+        return await this.userInvestmentLeaderBoardRepository.update(leaderBoardNo, entity);
     }
     //단순 DB로직 끝
 
@@ -134,30 +139,53 @@ export class UserService {
 
     // 2. 일일 투자 정보 입력
     async putInvestmentData(no: number, userInvDataPutDto: UserInvestmentDataPutDto) {
-        const user = await this.findByNo(no);
-        if (!user) throw new UnauthorizedException('로그인 후 이용해 주세요.')
-        const { startPrice, endPrice, memo, yyyymm, day } = userInvDataPutDto;
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        const profit = this.calculateProfit(+startPrice, +endPrice);
-        const profitPercent = profit === 0 ? '0%' : this.calculateProfitPercent(+startPrice, profit);
+        try {
+            const user = await this.findByNo(no);
+            if (!user) throw new UnauthorizedException('로그인 후 이용해 주세요.')
+            const { startPrice, endPrice, memo, yyyymm, day } = userInvDataPutDto;
 
-        const existData = await this.findInvestemtDataByUserNoAndDay(no, yyyymm, +day);
-        if (existData) {
-            existData.start_price = +startPrice;
-            existData.end_price = +endPrice;
-            existData.profit = profit;
-            existData.profit_percent = profitPercent;
-            existData.memo = memo;
-            existData.update_date = new Date();
+            const profit = this.calculateProfit(+startPrice, +endPrice);
+            const profitPercent = profit === 0 ? '0%' : this.calculateProfitPercent(+startPrice, profit);
 
-            await this.updateInvestmentDataByDay(existData);
-            return existData;
+            const existData = await this.findInvestemtDataByUserNoAndDay(no, yyyymm, +day);
+            let returnData;
+            if (existData) {
+                existData.start_price = +startPrice;
+                existData.end_price = +endPrice;
+                existData.profit = profit;
+                existData.profit_percent = profitPercent;
+                existData.memo = memo;
+                existData.update_date = new Date();
+
+                await this.updateInvestmentDataByDay(existData);
+                console.log('test');
+                returnData = existData;
+            }
+
+            else {
+                const entity = this.investmentDataEntityBuild(no, +startPrice, +endPrice, memo, yyyymm, +day, profit, profitPercent)
+                const result = await this.putInvestmentDataByDay(entity);
+                returnData = result;
+            }
+
+            //입력 후 리더보드 업데이트
+            await this.updateLeaderBoard(no);
+
+            await queryRunner.commitTransaction();
+            return returnData;
         }
 
-        else {
-            const entity = this.investmentDataEntityBuild(no, +startPrice, +endPrice, memo, yyyymm, +day, profit, profitPercent)
+        catch (error) {
+            await queryRunner.rollbackTransaction();
+            console.error(error);
+        }
 
-            return await this.putInvestmentDataByDay(entity);
+        finally {
+            await queryRunner.release();
         }
     }
 
@@ -216,6 +244,7 @@ export class UserService {
         }
         //이미 등록되어있을 때
     }
+
     // 2. 전체 리더보드 조회(입장 시)
     async getLeaderBoard() {
         return await this.findAllLeaderBoard();
@@ -224,6 +253,25 @@ export class UserService {
         // const profitPercent_first = entity.sort((a, b) => b.total_profit_percent.localeCompare(a.total_profit_percent))[0];
         // console.log(entity, profitPercent_first, profit_first);
         // return { entity, profit_first, profitPercent_first }
+    }
+
+    //3. 리더보드 업데이트
+    async updateLeaderBoard(userNo: number) {
+        const userInvData = await this.findInvestemtDataByUserNo(userNo);
+        if (userInvData.length === 0) {
+            throw new BadRequestException('no data');
+        }
+        const userLeaderboardData = await this.findLeaderBoardByUserNo(userNo);
+        const user = await this.findByNo(userNo);
+
+        const start_price: number = userInvData[0].start_price;
+        const nick_name: string = (userLeaderboardData.nickname) ? userLeaderboardData.nickname : user.id;
+        const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].end_price);
+        const total_profit_percent = this.calculateProfitPercent(start_price, total_profit);
+
+        const entity = this.leaderBoardEntityBuild(userNo, start_price, nick_name, total_profit, total_profit_percent);
+        console.log(entity);
+        return await this.updateLeaderBoardByEntity(userLeaderboardData.no, entity);        
     }
 
     //데이터 전체 초기화
