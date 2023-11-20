@@ -86,7 +86,9 @@ export class UserService {
     async findAllLeaderBoard() {
         return await this.userInvestmentLeaderBoardRepository.find({
             select:
-                { nickname: true, start_price: true, total_profit: true, total_profit_percent: true }
+                { nickname: true, start_price: true, total_profit: true, total_profit_percent: true },
+            order:
+                { total_profit: "DESC" }
         });
     }
 
