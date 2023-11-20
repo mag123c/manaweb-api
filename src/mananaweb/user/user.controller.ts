@@ -25,7 +25,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '투자내역 조회' })
   async getInvestmentDataByYyyyMm(@Jwt() cu: CurrentUser, @Query('yyyymm') yyyymm: string) {
-    console.log('test');
      return await this.userService.getInvestmentDataByYyyyMm(cu.no, yyyymm);
   }
 

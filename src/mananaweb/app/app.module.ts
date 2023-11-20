@@ -68,7 +68,6 @@ import { UserInvestmentLeaderBoardEntity } from '../user/entity/user-investment-
       database: process.env.DB_NAME,
       useUTC: false,
       timezone: 'Z',
-      dateStrings: true,
       logging: false,
       // logging: process.env.NODE_ENV == 'dev',
       entities: [

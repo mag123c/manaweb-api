@@ -56,7 +56,6 @@ export class AuthService {
     async signin(user: UserEntity) {
         //1. user validate with hashed pw        
         if (this.validateUser) {
-            user.last_join_date = new Date();
             const signinDateUpdate = this.userService.updateSignin(user);
 
             //1-2. when validated >> token created
