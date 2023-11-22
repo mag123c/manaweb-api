@@ -5,7 +5,7 @@ import { Jwt } from 'src/common/decorator/CurrentUserDecorator';
 import CurrentUser from '../auth/dto/currentUser.dto';
 import UserInvestmentDataPutDto from './dto/user-investmentData.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
-import { UserLeaderBoardCreateDto } from './dto/user-leardboard.dto';
+import { UserLeaderBoardDto } from './dto/user-leardboard.dto';
 import { VisitorGuard } from '../auth/guard/visitor-auth.guard';
 
 @ApiTags('user')
@@ -46,22 +46,28 @@ export class UserController {
   @Get('/leaderboard')
   @UseGuards(VisitorGuard)
   @ApiOperation({ description: '리더보드 조회' })
-  async getLeaderBoard() {
-    return await this.userService.getLeaderBoard();
+  async getLeaderBoard(@Jwt() cu: CurrentUser) {
+    return await this.userService.getLeaderBoard(cu.no);
+  }
+
+  @Put('/leaderboard')
+  @UseGuards(VisitorGuard)
+  @ApiOperation({ description: '리더보드 정보수정' })
+  async putLeaderBoard(@Jwt() cu: CurrentUser, @Body() userLeaderBoardModifyDto: UserLeaderBoardDto) {
+    return await this.userService.putLeaderBoard(cu.no, userLeaderBoardModifyDto);
   }
 
   @Post('/leaderboard')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '리더보드 등록' })
-  async createLeaderBoard(@Jwt() cu: CurrentUser, @Body() userLeaderBoardCreateDto: UserLeaderBoardCreateDto) {
+  async createLeaderBoard(@Jwt() cu: CurrentUser, @Body() userLeaderBoardCreateDto: UserLeaderBoardDto) {
     return await this.userService.createLeaderBoard(cu.no, userLeaderBoardCreateDto)
   }
 
-  @Post('/initData')
+  @Post('/init')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '데이터 초기화' })
-  async initData(@Jwt() cu: CurrentUser) {
-    console.log(cu);
-    return await this.userService.initData(cu.no);
+  async initData(@Jwt() cu: CurrentUser, @Body('data') data: string) {
+    return await this.userService.initData(data, cu.no);
   }
 }

@@ -7,7 +7,7 @@ import { Md5 } from 'md5-typescript';
 import { UserInvestmentDataEntity } from './entity/user-investment.entity';
 import UserInvestmentDataPutDto from './dto/user-investmentData.dto';
 import { UserInvestmentDataEntityBuilder } from './builder/user-investment.builder';
-import { UserLeaderBoardCreateDto } from './dto/user-leardboard.dto';
+import { UserLeaderBoardDto } from './dto/user-leardboard.dto';
 import { UserInvestmentLeaderBoardEntity } from './entity/user-investment-leaderboard.entity';
 import { UserInvestmentLeaderboardEntityBuilder } from './builder/user-investment-leaderboard.builder';
 import { HttpException } from 'sendbird-platform-sdk-typescript';
@@ -107,6 +107,10 @@ export class UserService {
     async updateLeaderBoardByEntity(leaderBoardNo: number, entity: UserInvestmentLeaderBoardEntity) {
         return await this.userInvestmentLeaderBoardRepository.update(leaderBoardNo, entity);
     }
+
+    async updateLeaderBoardByDto(leaderBoardNo: number, dto: UserLeaderBoardDto) {
+        return await this.userInvestmentLeaderBoardRepository.update(leaderBoardNo, { start_price: dto.startPrice, nickname: dto.nickname });
+    }
     //단순 DB로직 끝
 
     //JWT 관련 로직
@@ -199,7 +203,7 @@ export class UserService {
 
     //리더보드 관련
     // 1. 리더보드 등록
-    async createLeaderBoard(no: number, userLeaderBoardCreateDto: UserLeaderBoardCreateDto) {
+    async createLeaderBoard(no: number, userLeaderBoardCreateDto: UserLeaderBoardDto) {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
@@ -248,8 +252,11 @@ export class UserService {
     }
 
     // 2. 전체 리더보드 조회(입장 시)
-    async getLeaderBoard() {
-        return await this.findAllLeaderBoard();
+    async getLeaderBoard(userNo: number) {
+        const data = await this.findAllLeaderBoard();
+        const myData = await this.findLeaderBoardByUserNo(userNo);
+        
+        return { data, myData };
         // const entity = await this.findAllLeaderBoard();
         // const profit_first = entity.sort((a, b) => b.total_profit - a.total_profit)[0];
         // const profitPercent_first = entity.sort((a, b) => b.total_profit_percent.localeCompare(a.total_profit_percent))[0];
@@ -257,28 +264,39 @@ export class UserService {
         // return { entity, profit_first, profitPercent_first }
     }
 
-    //3. 리더보드 업데이트
+    //3. 리더보드 업데이트(데이터 입력 시)
     async updateLeaderBoard(userNo: number) {
         const userInvData = await this.findInvestemtDataByUserNo(userNo);
         if (userInvData.length === 0) {
             throw new BadRequestException('no data');
         }
-        const userLeaderboardData = await this.findLeaderBoardByUserNo(userNo);
+        const userLeaderBoardData = await this.findLeaderBoardByUserNo(userNo);
         const user = await this.findByNo(userNo);
 
         const start_price: number = userInvData[0].start_price;
-        const nick_name: string = (userLeaderboardData.nickname) ? userLeaderboardData.nickname : user.id;
+        const nick_name: string = (userLeaderBoardData.nickname) ? userLeaderBoardData.nickname : user.id;
         const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].end_price);
         const total_profit_percent = this.calculateProfitPercent(start_price, total_profit);
 
         const entity = this.leaderBoardEntityBuild(userNo, start_price, nick_name, total_profit, total_profit_percent);
         console.log(entity);
-        return await this.updateLeaderBoardByEntity(userLeaderboardData.no, entity);        
+        return await this.updateLeaderBoardByEntity(userLeaderBoardData.no, entity);        
+    }
+    //4. 리더보드 정보 수정
+    async putLeaderBoard(userNo: number, userLeaderBoardModifyDto: UserLeaderBoardDto) {
+        const userLeaderBoardData = await this.findLeaderBoardByUserNo(userNo);
+        return await this.updateLeaderBoardByDto(userLeaderBoardData.no, userLeaderBoardModifyDto);        
     }
 
     //데이터 전체 초기화
-    async initData(no: number) {
-        return await (this.deleteInvDataByUserNo(no), this.deleteLeaderBoardByUserNo(no));
+    async initData(data: string, no: number) {
+        if (data === 'all') {
+            return await (this.deleteInvDataByUserNo(no), this.deleteLeaderBoardByUserNo(no));
+        }
+        
+        if (data === 'leaderboard') {
+            return await this.deleteLeaderBoardByUserNo(no);
+        }
     }
 
     // async getTotalProfitFromInvData(data: UserInvestmentDataEntity[]): Promise<number> {

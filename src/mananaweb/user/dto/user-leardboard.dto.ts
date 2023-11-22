@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class UserLeaderBoardCreateDto {
+export class UserLeaderBoardDto {
     @IsString()
     @ApiProperty({ description: 'startPrice' })
     startPrice: string;
