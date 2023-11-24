@@ -16,8 +16,11 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: [
+      'https://mananaweb.net', 'https://dev.mananaweb.net',
+      'http://localhost:3000', 'http://localhost:3001',
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     optionsSuccessStatus: 204,
     exposedHeaders: ['Authorization'],
