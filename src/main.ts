@@ -20,8 +20,10 @@ async function bootstrap() {
       'https://mananaweb.net', 'https://dev.mananaweb.net',
       'http://localhost:3000', 'http://localhost:3001',
       'http://172.1.0.1:8082', 'http://172.1.0.1:8081'
-  ],
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+    optionsSuccessStatus: 204,
     exposedHeaders: ['Authorization'],
   })
 
