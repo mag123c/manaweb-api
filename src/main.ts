@@ -11,7 +11,7 @@ async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
   const app = await NestFactory.create(AppModule,
     {
-      bufferLogs: true,      
+      bufferLogs: true,
     }
   );
 
@@ -21,7 +21,8 @@ async function bootstrap() {
       'http://localhost:3000', 'http://localhost:3001',
       'http://172.1.0.1:8082', 'http://172.1.0.1:8081'
   ],
-    credentials: true,    
+    credentials: true,
+    exposedHeaders: ['Authorization'],
   })
 
   //API 경로 접두어 및 버전관리
