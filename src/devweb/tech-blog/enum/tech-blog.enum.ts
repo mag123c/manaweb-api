@@ -1,0 +1,43 @@
+export enum TechBlogNameEnum {
+    네이버 = 'naver',
+    Nhn = 'nhn',
+    카카오 = 'kakao',
+    라인 = 'line',
+    LyCorp = 'lycorp', //라인 23.10.01 부 새단장
+    쿠팡 = 'coupang',
+    우아한형제들 = 'woowahan',
+    당근마켓 = 'daangn',
+    토스 = 'toss',
+    직방 = 'zigbang',
+    야놀자 = 'yanolja',
+    컬리 = 'kurly',
+    요기요 = 'yogiyo',
+    Watcha = 'watcha',    
+    뱅크샐러드 = 'banksalad',    
+    Hyperconnect = 'hyperconnect',
+    강남언니 = 'gangnamunni', 
+    쏘카 = 'socar',
+    인프랩 = 'inflab'
+}
+
+export const TechBlogLinks = {
+    [TechBlogNameEnum.네이버]: 'https://d2.naver.com/home',
+    [TechBlogNameEnum.Nhn]: 'https://meetup.nhncloud.com/',
+    [TechBlogNameEnum.카카오]: 'https://tech.kakao.com/blog/',
+    [TechBlogNameEnum.라인]: 'https://engineering.linecorp.com/ko/blog',
+    [TechBlogNameEnum.LyCorp]: 'https://techblog.lycorp.co.jp/ko',
+    [TechBlogNameEnum.쿠팡]: 'https://medium.com/coupang-engineering/kr/home',
+    [TechBlogNameEnum.우아한형제들]: 'https://woowabros.github.io/',
+    [TechBlogNameEnum.당근마켓]: 'https://medium.com/daangn',
+    [TechBlogNameEnum.토스]: 'https://toss.tech/',
+    [TechBlogNameEnum.직방]: 'https://medium.com/zigbang',
+    [TechBlogNameEnum.야놀자]: 'https://medium.com/yanolja/archive',
+    [TechBlogNameEnum.컬리]: 'https://helloworld.kurly.com/',
+    [TechBlogNameEnum.요기요]: 'https://techblog.yogiyo.co.kr/',
+    [TechBlogNameEnum.Watcha]: 'https://medium.com/watcha',
+    [TechBlogNameEnum.뱅크샐러드]: 'https://blog.banksalad.com/',
+    [TechBlogNameEnum.Hyperconnect]: 'https://hyperconnect.github.io/',
+    [TechBlogNameEnum.강남언니]: 'https://blog.gangnamunni.com/blog/tech/',
+    [TechBlogNameEnum.쏘카]: 'https://tech.socarcorp.kr/',
+    [TechBlogNameEnum.인프랩] : 'https://tech.inflab.com/posts',    
+};
