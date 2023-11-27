@@ -10,7 +10,7 @@ export class PnlUserEntity {
   name: string;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-  create_date: Date;
+  createDate: Date;
 
   @OneToMany(() => PnlUserProfitEntity, (profit) => profit.user, { cascade: true })
   profits: PnlUserProfitEntity[];

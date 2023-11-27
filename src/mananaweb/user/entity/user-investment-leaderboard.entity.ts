@@ -8,9 +8,9 @@ export class UserInvestmentLeaderBoardEntity {
     @PrimaryGeneratedColumn()
     no: number;
 
-    @ApiProperty({ description: 'user_no' })
+    @ApiProperty({ description: 'userNo' })
     @Column()
-    user_no: number;
+    userNo: number;
 
     @ApiProperty({ description: 'nickname' })
     @Column()
@@ -19,19 +19,19 @@ export class UserInvestmentLeaderBoardEntity {
     @JoinColumn({ name: 'user_no', referencedColumnName: 'no' })
     user: UserEntity;
 
-    @ApiProperty({ description: 'start_price' })
+    @ApiProperty({ description: 'startPrice' })
     @Column()
-    start_price: string;
+    startPrice: string;
 
-    @ApiProperty({ description: 'total_profit' })
+    @ApiProperty({ description: 'totalProfit' })
     @Column()
-    total_profit: number;
+    totalProfit: number;
 
-    @ApiProperty({ description: 'total_profit_percent' })
+    @ApiProperty({ description: 'totalProfitPercent' })
     @Column()
-    total_profit_percent: string;
+    totalProfitPercent: string;
 
     @Column("datetime", { name: "update_date", default: () => "CURRENT_TIMESTAMP" })
     @Column()
-    update_date: Date;
+    updateDate: Date;
 }

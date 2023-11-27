@@ -33,7 +33,7 @@ export class PnlService {
 
             if (user) {
                 const exist = await this.pnlUserProfitRepository.findOne({
-                    where: { user: { no: user.no }, create_date: today}
+                    where: { user: { no: user.no }, createDate: today}
                 });
 
                 if (exist) {
@@ -43,10 +43,10 @@ export class PnlService {
                 }
                 else {
                     const newData = new PnlUserProfitEntity();
-                    newData.user_no = user.no;
+                    newData.userNo = user.no;
                     newData.start = start;
                     newData.end = end;
-                    newData.create_date = today;
+                    newData.createDate = today;
                     await this.pnlUserProfitRepository.save(newData);
                 }
             }

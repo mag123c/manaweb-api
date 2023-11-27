@@ -150,7 +150,7 @@ export class AuthService {
 
     removePasswordFromUserData(savedUser: UserEntity, text?: string) {
         delete savedUser.pw;
-        if (text === 'refresh') delete savedUser.refresh_token;        
+        if (text === 'refresh') delete savedUser.refreshToken;        
         return savedUser;
     }
 

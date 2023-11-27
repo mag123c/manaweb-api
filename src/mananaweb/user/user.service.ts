@@ -38,11 +38,11 @@ export class UserService {
     }
 
     async updateSignin(user: UserEntity): Promise<UpdateResult> {
-        return await this.userRepository.update(user.no, { last_join_date: user.last_join_date })
+        return await this.userRepository.update(user.no, { lastJoinDate: user.lastJoinDate })
     }
 
     async updateRefreshToken(no: number, currentHashedRefreshToken: string): Promise<UpdateResult> {
-        return await this.userRepository.update(no, { refresh_token: currentHashedRefreshToken })
+        return await this.userRepository.update(no, { refreshToken: currentHashedRefreshToken })
     }
 
     async getInvestmentDataByMonth(userNo: number, yyyymm: string): Promise<UserInvestmentDataEntity[]> {
@@ -58,12 +58,12 @@ export class UserService {
     }
 
     async findInvestemtDataByUserNoAndDay(userNo: number, yyyymm: string, day: number): Promise<UserInvestmentDataEntity> {
-        return await this.userInvestmentDataRepository.findOneBy({ user_no: userNo, yyyymm: yyyymm, day: day });
+        return await this.userInvestmentDataRepository.findOneBy({ userNo: userNo, yyyymm: yyyymm, day: day });
     }
 
     async findInvestemtDataByUserNo(userNo: number): Promise<UserInvestmentDataEntity[]> {
         return await this.userInvestmentDataRepository.find({
-            where: { user_no: userNo },
+            where: { userNo: userNo },
             order: {
                 yyyymm: 'ASC',
                 day: 'ASC',
@@ -80,20 +80,20 @@ export class UserService {
     }
 
     async deleteInvDataByUserNo(userNo: number) {
-        return await this.userInvestmentDataRepository.delete({ user_no: userNo });
+        return await this.userInvestmentDataRepository.delete({ userNo: userNo });
     }
 
     async findAllLeaderBoard() {
         return await this.userInvestmentLeaderBoardRepository.find({
             select:
-                { nickname: true, start_price: true, total_profit: true, total_profit_percent: true },
+                { nickname: true, startPrice: true, totalProfit: true, totalProfitPercent: true },
             order:
-                { total_profit: "DESC" }
+                { totalProfit: "DESC" }
         });
     }
 
     async findLeaderBoardByUserNo(userNo: number): Promise<UserInvestmentLeaderBoardEntity> {
-        return await this.userInvestmentLeaderBoardRepository.findOneBy({ user_no: userNo });
+        return await this.userInvestmentLeaderBoardRepository.findOneBy({ userNo: userNo });
     }
 
     async saveLeaderBoard(entity: UserInvestmentLeaderBoardEntity) {
@@ -101,7 +101,7 @@ export class UserService {
     }
 
     async deleteLeaderBoardByUserNo(userNo: number) {
-        return await this.userInvestmentLeaderBoardRepository.delete({ user_no: userNo });
+        return await this.userInvestmentLeaderBoardRepository.delete({ userNo: userNo });
     }
 
     async updateLeaderBoardByEntity(leaderBoardNo: number, entity: UserInvestmentLeaderBoardEntity) {
@@ -109,7 +109,7 @@ export class UserService {
     }
 
     async updateLeaderBoardByDto(leaderBoardNo: number, dto: UserLeaderBoardDto) {
-        return await this.userInvestmentLeaderBoardRepository.update(leaderBoardNo, { start_price: dto.startPrice, nickname: dto.nickname });
+        return await this.userInvestmentLeaderBoardRepository.update(leaderBoardNo, { startPrice: dto.startPrice, nickname: dto.nickname });
     }
     //단순 DB로직 끝
 
@@ -117,12 +117,12 @@ export class UserService {
     async refreshTokenMatches(refreshToken: string, no: number): Promise<UserEntity> {
         const user = await this.findByNo(no);
 
-        const isMatches = this.isMatch(refreshToken, user.refresh_token);
+        const isMatches = this.isMatch(refreshToken, user.refreshToken);
         if (isMatches) return user;
     }
 
     async removeRefreshToken(no: number): Promise<UpdateResult> {
-        return this.userRepository.update(no, { refresh_token: null });
+        return this.userRepository.update(no, { refreshToken: null });
     }
 
     isMatch(userInput: string, hashed: string): boolean {
@@ -160,12 +160,12 @@ export class UserService {
             const existData = await this.findInvestemtDataByUserNoAndDay(no, yyyymm, +day);
             let returnData;
             if (existData) {
-                existData.start_price = +startPrice;
-                existData.end_price = +endPrice;
+                existData.startPrice = +startPrice;
+                existData.endPrice = +endPrice;
                 existData.profit = profit;
-                existData.profit_percent = profitPercent;
+                existData.profitPercent = profitPercent;
                 existData.memo = memo;
-                existData.update_date = new Date();
+                existData.updateDate = new Date();
 
                 await this.updateInvestmentDataByDay(existData);
                 console.log('test');
@@ -224,10 +224,10 @@ export class UserService {
             //나머지 정보 세팅
             const { startPrice, nickname } = userLeaderBoardCreateDto;
 
-            const start_price: number = (startPrice) ? +startPrice : userInvData[0].start_price;
+            const start_price: number = (startPrice) ? +startPrice : userInvData[0].startPrice;
             const nick_name: string = (nickname) ? nickname : user.id;
             // const total_profit = await this.getTotalProfitFromInvData(userInvData);
-            const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].end_price);
+            const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].endPrice);
             const total_profit_percent = this.calculateProfitPercent(start_price, total_profit);
 
             const entity = this.leaderBoardEntityBuild(no, start_price, nick_name, total_profit, total_profit_percent);
@@ -273,9 +273,9 @@ export class UserService {
         const userLeaderBoardData = await this.findLeaderBoardByUserNo(userNo);
         const user = await this.findByNo(userNo);
 
-        const start_price: number = userInvData[0].start_price;
+        const start_price: number = userInvData[0].startPrice;
         const nick_name: string = (userLeaderBoardData.nickname) ? userLeaderBoardData.nickname : user.id;
-        const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].end_price);
+        const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].endPrice);
         const total_profit_percent = this.calculateProfitPercent(start_price, total_profit);
 
         const entity = this.leaderBoardEntityBuild(userNo, start_price, nick_name, total_profit, total_profit_percent);

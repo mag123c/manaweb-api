@@ -7,7 +7,7 @@ export class PnlUserProfitEntity {
   id: number;
   
   @Column()
-  user_no: number;
+  userNo: number;
 
   @ManyToOne(() => PnlUserEntity, { eager: true })
   @JoinColumn({ name: 'user_no', referencedColumnName: 'no' })
@@ -20,5 +20,5 @@ export class PnlUserProfitEntity {
   end: number;
 
   @Column()
-  create_date: string;
+  createDate: string;
 }

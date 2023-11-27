@@ -1,21 +1,21 @@
 //create channel Error
 export class SendbirdBadRequestResponse400104 {
-    message: "\"is_super\" must be a boolean.";
-    code: 400104;
-    error: true;
+    message: string;
+    code: number;
+    error: boolean;
 }
 //userList get Error
 export class SendbirdBadRequestResponse400105 {
-    message: "\"metadatakey\" must be required.";
-    code: 400105;
-    error: true;
+    message: string;
+    code: number;
+    error: boolean;
 }
 
 //createUser Error
 export class SendbirdBadRequestResponse400111 {
-    message: "Invalid value: \"channel_url. It takes only alphabets, numbers, hyphen and underscore.\".";
+    message: string;
     code: 400111;
-    error: true;
+    error: boolean;
 }
 
 //User, Channel NF Error
@@ -31,4 +31,11 @@ export class SendbirdBadRequestResponse400201 {
         this.code = 400201;
         this.error = true;
     }
+}
+
+//User Create >> duplicate ID
+export class SendbirdBadRequestResponse400202 {
+    message: string;
+    code: 400202;
+    error: boolean;
 }

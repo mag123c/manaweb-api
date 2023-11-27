@@ -10,7 +10,7 @@ export class UserInvestmentDataEntity {
 
     @ApiProperty({ description: 'user_no' })
     @Column()
-    user_no: number;
+    userNo: number;
 
     @ManyToOne(() => UserEntity, { eager: true })
     @JoinColumn({ name: 'user_no', referencedColumnName: 'no' })
@@ -24,32 +24,32 @@ export class UserInvestmentDataEntity {
     @Column()
     day: number;
 
-    @ApiProperty({ description: 'start_price' })
+    @ApiProperty({ description: 'startPrice' })
     @Column()
-    start_price: number;
+    startPrice: number;
 
-    @ApiProperty({ description: 'end_price' })
+    @ApiProperty({ description: 'endPrice' })
     @Column()
-    end_price: number;
+    endPrice: number;
 
     @ApiProperty({ description: 'profit' })
     @Column()
     profit: number;
 
-    @ApiProperty({ description: 'profit_percent' })
+    @ApiProperty({ description: 'profitPercent' })
     @Column()
-    profit_percent: string;
+    profitPercent: string;
 
     @ApiProperty({ description: 'memo' })
     @Column()
     memo: string;
 
-    @Column("datetime", { name: "create_date", default: () => "CURRENT_TIMESTAMP" })
-    @Column()
-    create_date: Date;
+    @ApiProperty({ description: 'createDate' })
+    @Column("datetime", { name: "create_date", default: () => "CURRENT_TIMESTAMP" })    
+    createDate: Date;
 
+    @ApiProperty({ description: 'updateDdate' })
     @Column("datetime", { name: "update_date", default: () => "CURRENT_TIMESTAMP" })
-    @Column()
-    update_date: Date;
+    updateDate: Date;
 
 }

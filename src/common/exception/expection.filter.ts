@@ -13,7 +13,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    let message = exception.response?.message || exception.message || 'UNKNOWN';
+    let message = exception.response?.message || exception.message|| 'UNKNOWN';    
+    let errorCode = exception.response?.code ? exception.response?.code : status;
     if (Array.isArray(message)) {
       message = message.reduce((acc, mesa) => (acc += mesa + ','), '');
     }
@@ -26,6 +27,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       .status(status)
       .json({
         statusCode: status,
+        errorCode: errorCode,
         timestamp: new Date().toISOString(),
         path: request.url,
         message,

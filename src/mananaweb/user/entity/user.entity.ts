@@ -13,16 +13,16 @@ export class UserEntity {
     pw: string;
 
     @Column({ name: 'refresh_token' })
-    refresh_token: string;
+    refreshToken: string;
 
     @Column({ name: 'last_join_date'})
-    last_join_date: Date;
+    lastJoinDate: Date;
 
     @Column({ name: 'create_date', default: () => 'CURRENT_TIMESTAMP' })
     create_date: Date;
 
     @Column({ name: 'update_date', default: () => 'CURRENT_TIMESTAMP' })
-    update_date: Date;
+    updateDate: Date;
 
     @OneToMany(() => UserInvestmentDataEntity, (investment) => investment.user, { cascade: true })
     profits: UserInvestmentDataEntity[];
