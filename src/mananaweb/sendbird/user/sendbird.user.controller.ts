@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SendbirdUserService } from './sendbird.user.service';
 import { SendbirdDashBoardUserCreateResponse, SendbirdDashBoardUserListResponse, SendbirdDashBoardUserResponse, SendbirdDashBoardUserTokenResponse } from './resopnse/sendbird.user.response';
 import { SendbirdBadRequestResponse400105, SendbirdBadRequestResponse400201, SendbirdBadRequestResponse400202 } from '../util/reponse/errorResponse';
 import { Jwt } from 'src/common/decorator/CurrentUserDecorator';
 import CurrentUser from 'src/mananaweb/auth/dto/currentUser.dto';
+import { QueryDto } from './query.dto';
 @ApiTags('sendbird')
 @Controller('/sendbird/user')
 export class SendbirdUserController {
