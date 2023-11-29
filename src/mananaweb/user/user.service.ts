@@ -168,7 +168,6 @@ export class UserService {
                 existData.updateDate = new Date();
 
                 await this.updateInvestmentDataByDay(existData);
-                console.log('test');
                 returnData = existData;
             }
 
@@ -231,6 +230,8 @@ export class UserService {
             const total_profit_percent = this.calculateProfitPercent(start_price, total_profit);
 
             const entity = this.leaderBoardEntityBuild(no, start_price, nick_name, total_profit, total_profit_percent);
+
+            console.log(entity);
             const result = await this.saveLeaderBoard(entity);
 
             await queryRunner.commitTransaction();
@@ -240,9 +241,11 @@ export class UserService {
 
         catch (error) {
             await queryRunner.rollbackTransaction();
-            if (error.response.statusCode === 400) {
+            console.error(error);
+            if (error.response?.statusCode === 400) {
                 throw new BadRequestException(`${error.response.message}`);
             }
+            throw error;
         }
 
         finally {
@@ -270,17 +273,20 @@ export class UserService {
         if (userInvData.length === 0) {
             throw new BadRequestException('no data');
         }
+
         const userLeaderBoardData = await this.findLeaderBoardByUserNo(userNo);
         const user = await this.findByNo(userNo);
 
-        const start_price: number = userInvData[0].startPrice;
-        const nick_name: string = (userLeaderBoardData.nickname) ? userLeaderBoardData.nickname : user.id;
-        const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].endPrice);
-        const total_profit_percent = this.calculateProfitPercent(start_price, total_profit);
-
-        const entity = this.leaderBoardEntityBuild(userNo, start_price, nick_name, total_profit, total_profit_percent);
-        console.log(entity);
-        return await this.updateLeaderBoardByEntity(userLeaderBoardData.no, entity);        
+        if (userLeaderBoardData) {
+            const start_price: number = userInvData[0].startPrice;
+            const nick_name: string = (userLeaderBoardData.nickname) ? userLeaderBoardData.nickname : user.id;
+            const total_profit: number = this.calculateProfit(start_price, userInvData[userInvData.length - 1].endPrice);
+            const total_profit_percent = this.calculateProfitPercent(start_price, total_profit);
+    
+            const entity = this.leaderBoardEntityBuild(userNo, start_price, nick_name, total_profit, total_profit_percent);
+            console.log(entity);
+            return await this.updateLeaderBoardByEntity(userLeaderBoardData.no, entity); 
+        }       
     }
     //4. 리더보드 정보 수정
     async putLeaderBoard(userNo: number, userLeaderBoardModifyDto: UserLeaderBoardDto) {

@@ -1,19 +1,19 @@
 import { UserInvestmentLeaderBoardEntity } from "../entity/user-investment-leaderboard.entity";
 
 export class UserInvestmentLeaderboardEntityBuilder {
-  private user_no: number;
-  private start_price: number;
+  private userNo: number;
+  private startPrice: number;
   private nickname: string;
-  private total_profit: number;
-  private total_profit_percent: string;  
+  private totalProfit: number;
+  private totalProfitPercent: string;  
 
-  withUserNo(user_no: number) {
-    this.user_no = user_no;
+  withUserNo(userNo: number) {
+    this.userNo = userNo;
     return this;
   }
 
-  withStartPrice(start_price: number) {
-    this.start_price = start_price;
+  withStartPrice(startPrice: number) {
+    this.startPrice = startPrice;
     return this;
   }
 
@@ -23,13 +23,13 @@ export class UserInvestmentLeaderboardEntityBuilder {
     return this;
   }
 
-  withTotalProfit(total_profit: number) {
-    this.total_profit = total_profit;
+  withTotalProfit(totalProfit: number) {
+    this.totalProfit = totalProfit;
     return this;
   }
 
-  withTotalProfitPercent(total_profit_percent: string) {
-    this.total_profit_percent = total_profit_percent;
+  withTotalProfitPercent(totalProfitPercent: string) {
+    this.totalProfitPercent = totalProfitPercent;
     return this;
   }
 

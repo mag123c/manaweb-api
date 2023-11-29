@@ -7,13 +7,9 @@ export const Jwt = createParamDecorator((data: unknown, context: ExecutionContex
   if (request.user) {
     currentUser.no = Number(request.user.no);
     currentUser.id = request.user.id;
-    currentUser.web_id = 'test1';
-    currentUser.with_id = 'iwd435990';    
     return currentUser;
   }
   else {
-    currentUser.no = 1;
-    currentUser.id = 'test2'
     currentUser.web_id = 'test2';
     currentUser.with_id = 'iwd435991';    
     return currentUser;

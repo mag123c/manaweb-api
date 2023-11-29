@@ -1,17 +1,17 @@
 import { UserInvestmentDataEntity } from "../entity/user-investment.entity";
 
 export class UserInvestmentDataEntityBuilder {
-  private user_no: number;
+  private userNo: number;
   private yyyymm: string;
   private day: number;
-  private start_price: number;
-  private end_price: number;
+  private startPrice: number;
+  private endPrice: number;
   private profit: number;
-  private profit_percent: string;
+  private profitPercent: string;
   private memo: string;
 
-  withUserNo(user_no: number) {
-    this.user_no = user_no;
+  withUserNo(userNo: number) {
+    this.userNo = userNo;
     return this;
   }
 
@@ -25,13 +25,13 @@ export class UserInvestmentDataEntityBuilder {
     return this;
   }
 
-  withStartPrice(start_price: number) {
-    this.start_price = start_price;
+  withStartPrice(startPrice: number) {
+    this.startPrice = startPrice;
     return this;
   }
 
-  withEndPrice(end_price: number) {
-    this.end_price = end_price;
+  withEndPrice(endPrice: number) {
+    this.endPrice = endPrice;
     return this;
   }
 
@@ -40,8 +40,8 @@ export class UserInvestmentDataEntityBuilder {
     return this;
   }
 
-  withProfitPercent(profit_percent: string) {
-    this.profit_percent = profit_percent;
+  withProfitPercent(profitPercent: string) {
+    this.profitPercent = profitPercent;
     return this;
   }
 
