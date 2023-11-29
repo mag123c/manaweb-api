@@ -3,6 +3,7 @@ import * as sendbird from 'sendbird-platform-sdk-typescript';
 import { SendbirdTextMsgDto } from '../message/entity/dto/sendbird.message.dto';
 import { SEND_BIRD_PROVIDER } from '../../sendbird.provider';
 import { SendbirdMessageService } from '../message/sendbird.message.service';
+import { SendbirdBadRequestException } from '../../util/customException';
 
 @Injectable()
 export class SendbirdChannelService {
@@ -15,53 +16,92 @@ export class SendbirdChannelService {
         private readonly sendbirdMessageService: SendbirdMessageService,
         @Inject(SEND_BIRD_PROVIDER)
         private sendbirdProvider: { sendbirdChannelAPI, sendbirdChatbotAPI, API_TOKEN, IBOT_ID },
-    ) {       
+    ) {
         this.API_TOKEN = sendbirdProvider.API_TOKEN;
         this.channelAPI = sendbirdProvider.sendbirdChannelAPI;
         this.chatbotAPI = sendbirdProvider.sendbirdChatbotAPI;
     }
-    //채널 목록 조회
-    async getChannelList(userId: string) {
-        try {            
+
+    /** API part **/
+
+    /**
+     * Get Group Channel List By UserID(Jwt Token Validate)
+     * API endpoint - GET api/v1/sendbird/groupChannel
+     * @param userId 
+     * @returns 
+     */
+    async getGroupChannelListByUserIdAPI(userId: string) {
+        return await this.getGroupChannelListByUserId(userId);
+    }
+
+    /**
+     * Create Group Channel List By UserID(Jwt Token Validate)
+     * API endpoint - POST api/v1/sendbird/groupChannel
+     * @param userId 
+     * @returns 
+     */
+    async createGroupChannelByUserIdAPI(userId: string, target: string) {
+        return await this.createGroupChannelByUserId(userId, target);
+    }
+
+    /** API part end **/
+
+
+
+    /** Business Logic part **/
+
+    /**
+     * Get Group Channel List By UserID
+     * @param userId 
+     * @returns GcListChannelsResponse
+     */
+    async getGroupChannelListByUserId(userId: string): Promise<sendbird.GcListChannelsResponse> {
+        try {
             const channelList = await this.channelAPI.gcListChannels(this.API_TOKEN, userId);
             return channelList;
-        } catch (error) {
-            throw new sendbird.HttpException('getChannelList');
+        }
+        catch (error) {
+            const { message, code } = JSON.parse(error.body);
+            throw new SendbirdBadRequestException(message, code);
         }
     }
 
-    //채널 만들기(임시::관리자문의)
-    async createChannel(userId: string) {
-        const userIds = ['아이웨딩', userId];
+    /**
+     * Create Group Channel UserID -> TargetID
+     * @param userId 
+     * @param targetId 
+     * @returns 
+     */
+    async createGroupChannelByUserId(userId: string, targetId: string): Promise<sendbird.SendBirdGroupChannelChannel> {
+        if (!targetId) targetId = '아이웨딩';
+        const userIds = [userId, targetId];
         try {
-            const channel = await this.channelAPI.gcCreateChannel(this.API_TOKEN, { userIds, operatorIds: ['ibotibotibotibotibot'], isDistinct: true });
+            const channel = await this.channelAPI.gcCreateChannel(this.API_TOKEN, { userIds, isDistinct: true });
             return channel.channel;
-        } catch (error) {
-            throw new sendbird.HttpException('createChannel');
-        }        
-    }
-
-    //채팅방 입장 시 해당 채팅방 정보
-    async getChannelByUrl(channelUrl: string) {
-        try {
-           const channel = await this.channelAPI.gcViewChannelByUrl(this.API_TOKEN, channelUrl, true, true);
-        } catch (error) {
-            throw new sendbird.HttpException('getChannelByUrl');
+        }
+        catch (error) {
+            const { message, code } = JSON.parse(error.body);
+            throw new SendbirdBadRequestException(message, code);
         }
     }
 
+    /** Business Logic part end **/
+
+
+    /** 미사용 코드 **/
     async initChannel(userId: string) {
-        const channel = await this.createChannel(userId);
-        if(!channel) throw new sendbird.HttpException('initChannel::createChannel error');
+        const channel = await this.createGroupChannelByUserIdAPI(userId, '아이웨딩');
+        if (!channel) throw new sendbird.HttpException('initChannel::createChannel error');
 
         const { channelUrl } = channel;
         this.initChatbot(channelUrl);
-        const dto:SendbirdTextMsgDto = {
+        const dto: SendbirdTextMsgDto = {
             message_type: "MESG",
             user_id: "아이웨딩",
-            message: "안녕하세요? 무엇을 도와드릴까요?"
-        }        
-        return await this.sendbirdMessageService.sendTextMsg(dto, channelUrl);
+            message: "안녕하세요? 무엇을 도와드릴까요?",
+            channel_url: channelUrl
+        }
+        return await this.sendbirdMessageService.sendTextMsgAPI(dto);
     }
 
     async initChatbot(channelUrl: string) {
@@ -75,8 +115,19 @@ export class SendbirdChannelService {
                 channelUrl: channelUrl,
             })
             return ibot;
-        } catch (error) {
+        }
+        catch (error) {
             throw new sendbird.HttpException('initChatbot');
+        }
+    }
+
+    //채팅방 입장 시 해당 채팅방 정보
+    async getChannelByUrl(channelUrl: string) {
+        try {
+            const channel = await this.channelAPI.gcViewChannelByUrl(this.API_TOKEN, channelUrl, true, true);
+        }
+        catch (error) {
+            throw new sendbird.HttpException('getChannelByUrl');
         }
     }
 }

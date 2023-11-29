@@ -14,8 +14,12 @@ export class SendbirdTextMsgDto {
 
   @ApiProperty({ description: '메세지', example: '안녕하세요 반갑습니다.' })
   @IsString()
-  @IsUrl()
   message: string;
+
+  @ApiProperty({ description: '채널 ID' })
+  @IsString()
+  @IsNotEmpty()
+  channel_url: string;
 }
 
 // export class SendbirdFileMsgDto {

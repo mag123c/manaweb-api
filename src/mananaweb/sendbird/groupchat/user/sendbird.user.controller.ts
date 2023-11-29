@@ -5,6 +5,7 @@ import { SendbirdDashBoardUserCreateResponse, SendbirdDashBoardUserListResponse,
 import { Jwt } from 'src/common/decorator/CurrentUserDecorator';
 import CurrentUser from 'src/mananaweb/auth/dto/currentUser.dto';
 import { SendbirdBadRequestResponse400201, SendbirdBadRequestResponse400105, SendbirdBadRequestResponse400202 } from '../../util/reponse/errorResponse';
+import { SendbirdUserEntity } from '../../entity/sendbird.userinfo.entity';
 @ApiTags('sendbird')
 @Controller('/sendbird/user')
 export class SendbirdUserController {
@@ -16,7 +17,7 @@ export class SendbirdUserController {
   /**
    * 
    * @param userId 
-   * @returns user
+   * @returns SendbirdUserEntity
    */
   @ApiOperation({ description: '대쉬보드 유저 정보' })
   @ApiOkResponse({ type: SendbirdDashBoardUserResponse })
@@ -29,14 +30,14 @@ export class SendbirdUserController {
   /**
    * 
    * @param userId 
-   * @returns user
+   * @returns SendbirdUserEntity
    */
   @ApiOperation({ description: '대쉬보드 유저 생성' })
   @ApiOkResponse({ type: SendbirdDashBoardUserCreateResponse })
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400202 })
   @Post()
-  createUser(@Jwt() cu: CurrentUser) {
-    return this.sendbirdUserSerivce.postUserCreateAPI(cu.web_id, cu.with_id);
+  async createUser(@Jwt() cu: CurrentUser): Promise<SendbirdUserEntity> {
+    return await this.sendbirdUserSerivce.postUserCreateAPI(cu.web_id, cu.with_id);
   }
 
   // **************************************아래는 미사용하는 코드********************************************** 
