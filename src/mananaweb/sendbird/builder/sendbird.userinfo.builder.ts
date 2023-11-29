@@ -5,6 +5,7 @@ export class SendbirdUserEntityBuilder{
   private userId: string;
   private nickname: string;
   private accessToken: string;  
+  private expirationTime: number;
   private createTime: number;
 
   withWithId(withId: string) {
@@ -25,6 +26,11 @@ export class SendbirdUserEntityBuilder{
 
   withAccessToken(accessToken: string) {
     this.accessToken = accessToken;
+    return this;
+  }
+
+  withExpirationTime(expirationTime: number) {
+    this.expirationTime = expirationTime;
     return this;
   }
 

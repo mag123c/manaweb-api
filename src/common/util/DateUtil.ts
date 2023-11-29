@@ -41,3 +41,7 @@ export function isBefore(curDate: Date, targetDate: Date = new Date()) {
 export function isAfter(curDate: Date, targetDate: Date = new Date()) {
   return moment(curDate).isAfter(targetDate);
 }
+
+export function getUnixTimeAfetrDay() {
+  return (new Date().setDate(new Date().getDate() + 1)) / 1000;
+}

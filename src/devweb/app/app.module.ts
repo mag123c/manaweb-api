@@ -30,8 +30,8 @@ import { TechBlogModule } from '../tech-blog/tech-blog.module';
         database: process.env.DB_NAME,
         useUTC: false,
         timezone: 'Z',
-        logging: false,
-        // logging: process.env.NODE_ENV == 'dev',
+        // logging: false,
+        logging: process.env.NODE_ENV == 'dev',
         entities: [
 ,
         ],

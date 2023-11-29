@@ -23,6 +23,10 @@ export class SendbirdUserEntity {
     @Column({ name: 'access_token' })
     accessToken: number;
 
+    @ApiProperty({ description: '토큰만료시간' })
+    @Column({ type: 'bigint', name: 'expiration_time' })
+    expirationTime: number;    
+
     @ApiProperty({ description: 'create_time' })
     @Column({ name: 'create_time' })
     createTime: number;    

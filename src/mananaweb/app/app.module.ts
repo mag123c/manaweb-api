@@ -11,15 +11,12 @@ import { GlobalExceptionFilter } from 'src/common/exception/expection.filter';
 import { ErrorHistoryModule } from 'src/common/error/errorhistory.module';
 import { ImitationModule } from 'src/mananaweb/investing/imitation/imitation.module';
 import { UserModule } from 'src/mananaweb/user/user.module';
-import { SendbirdUserModule } from 'src/mananaweb/sendbird/user/sendbird.user.module';
-import { SendbirdMessageModule } from 'src/mananaweb/sendbird/message/sendbird.message.module';
-import { SendbirdChannelModule } from 'src/mananaweb/sendbird/channel/sendbird.channel.module';
 import { AuthModule } from 'src/mananaweb/auth/auth.module';
-import { SendbirdChatbotModule } from 'src/mananaweb/sendbird/chatbot/sendbird.chatbot.module';
 import Joi from 'joi';
 import { PnlModule } from 'src/mananaweb/investing/my/pnl.module';
 import { mananawebConnection } from '../mananaweb-config';
 import { sendbirdConnection } from '../sendbird-config';
+import { SendbirdModule } from '../sendbird/sendbird.module';
 
 
 @Module({
@@ -58,10 +55,7 @@ import { sendbirdConnection } from '../sendbird-config';
     LogModule,   
 
     //sendbird test version
-    SendbirdUserModule,
-    SendbirdMessageModule,
-    SendbirdChannelModule,
-    SendbirdChatbotModule,
+    SendbirdModule
   ],
   controllers: [AppController],
   providers: [AppService,

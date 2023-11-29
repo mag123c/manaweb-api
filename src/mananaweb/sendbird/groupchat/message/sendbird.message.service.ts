@@ -1,24 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import * as sendbird from 'sendbird-platform-sdk-typescript';
-import { ConfigService } from '@nestjs/config';
 import { SendbirdTextMsgDto } from './entity/dto/sendbird.message.dto';
+import { SEND_BIRD_PROVIDER } from '../../sendbird.provider';
 
 @Injectable()
 export class SendbirdMessageService {
-    APP_ID: string;
-    API_TOKEN: string;
-    serverConfig: sendbird.ServerConfiguration<{app_id: string}>;
-    configuration: sendbird.Configuration;
-    messageApi: sendbird.MessageApi;
+    private readonly API_TOKEN: string;
+    private readonly messageAPI: sendbird.MessageApi;
 
     constructor(
-        private readonly configService: ConfigService,
-    ){
-        this.APP_ID = this.configService.get('SENDBIRD_APP_ID');
-        this.API_TOKEN = this.configService.get('SENDBIRD_API_TOKEN');
-        this.serverConfig = new sendbird.ServerConfiguration(`https://api-${this.APP_ID}.sendbird.com`, { "app_id": this.APP_ID });
-        this.configuration = sendbird.createConfiguration({ baseServer: this.serverConfig });
-        this.messageApi = new sendbird.MessageApi(this.configuration);
+        @Inject(SEND_BIRD_PROVIDER)
+        private sendbirdProvider: { sendbirdMessageAPI, API_TOKEN },
+    ) {       
+        this.API_TOKEN = sendbirdProvider.API_TOKEN;
+        this.messageAPI = sendbirdProvider.sendbirdMessageAPI;
     }
 
     async sendTextMsg (messageDto: SendbirdTextMsgDto, channel_url: string) {      
@@ -41,7 +36,7 @@ export class SendbirdMessageService {
                 font_color: "black",
                 background_color: "red",                
             }]
-            const msgSend = await this.messageApi.sendMessage(this.API_TOKEN, 'group_channels', channel_url,
+            const msgSend = await this.messageAPI.sendMessage(this.API_TOKEN, 'group_channels', channel_url,
                 { messageType: message_type, userId: user_id, message: message, isSilent: true,
                  data: JSON.stringify(meta_data) }
             )
@@ -53,7 +48,7 @@ export class SendbirdMessageService {
 
     async getMsg() {
         try {            
-            const msg = await this.messageApi.listMessages(this.API_TOKEN, 'group_channels', 'sendbird_group_channel_132276856_8dfd8be8ec15d3630b0e3782ad868afcd4af8219', '1484208113351')
+            const msg = await this.messageAPI.listMessages(this.API_TOKEN, 'group_channels', 'sendbird_group_channel_132276856_8dfd8be8ec15d3630b0e3782ad868afcd4af8219', '1484208113351')
             console.log(msg);
             return msg;
         } catch(error) {

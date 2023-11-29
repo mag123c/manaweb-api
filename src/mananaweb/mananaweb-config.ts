@@ -21,8 +21,8 @@ export const mananawebConnection = (configService: ConfigService) =>
     database: configService.get('DB_NAME'),
     useUTC: false,
     timezone: 'Z',
-    logging: false,
-    // logging: process.env.NODE_ENV == 'dev',
+    // logging: false,
+    logging: process.env.NODE_ENV == 'dev',
     entities: [
         UserVisitEntity,
         UserClickEntity,

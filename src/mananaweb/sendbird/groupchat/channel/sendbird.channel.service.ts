@@ -1,30 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import * as sendbird from 'sendbird-platform-sdk-typescript';
-import { ConfigService } from '@nestjs/config';
-import { SendbirdMessageService } from '../message/sendbird.message.service';
 import { SendbirdTextMsgDto } from '../message/entity/dto/sendbird.message.dto';
+import { SEND_BIRD_PROVIDER } from '../../sendbird.provider';
+import { SendbirdMessageService } from '../message/sendbird.message.service';
 
 @Injectable()
 export class SendbirdChannelService {
-    APP_ID: string;
-    API_TOKEN: string;
-    IBOT_ID: string;
-    serverConfig: sendbird.ServerConfiguration<{app_id: string}>;
-    configuration: sendbird.Configuration;
-    channelAPI: sendbird.GroupChannelApi;
-    chatbotAPI: sendbird.BotApi;
+    private readonly API_TOKEN: string;
+    private readonly IBOT_ID: string;
+    private readonly channelAPI: sendbird.GroupChannelApi;
+    private readonly chatbotAPI: sendbird.BotApi;
 
     constructor(
-        private readonly configService: ConfigService,
-        private sendbirdMsgService: SendbirdMessageService,
-    ){
-        this.APP_ID = this.configService.get('SENDBIRD_APP_ID');
-        this.API_TOKEN = this.configService.get('SENDBIRD_API_TOKEN');
-        this.IBOT_ID = this.configService.get('IBOT_ID');
-        this.serverConfig = new sendbird.ServerConfiguration(`https://api-${this.APP_ID}.sendbird.com`, { "app_id": this.APP_ID });
-        this.configuration = sendbird.createConfiguration({ baseServer: this.serverConfig });
-        this.channelAPI = new sendbird.GroupChannelApi(this.configuration);
-        this.chatbotAPI = new sendbird.BotApi(this.configuration);
+        private readonly sendbirdMessageService: SendbirdMessageService,
+        @Inject(SEND_BIRD_PROVIDER)
+        private sendbirdProvider: { sendbirdChannelAPI, sendbirdChatbotAPI, API_TOKEN, IBOT_ID },
+    ) {       
+        this.API_TOKEN = sendbirdProvider.API_TOKEN;
+        this.channelAPI = sendbirdProvider.sendbirdChannelAPI;
+        this.chatbotAPI = sendbirdProvider.sendbirdChatbotAPI;
     }
     //채널 목록 조회
     async getChannelList(userId: string) {
@@ -67,7 +61,7 @@ export class SendbirdChannelService {
             user_id: "아이웨딩",
             message: "안녕하세요? 무엇을 도와드릴까요?"
         }        
-        return await this.sendbirdMsgService.sendTextMsg(dto, channelUrl);
+        return await this.sendbirdMessageService.sendTextMsg(dto, channelUrl);
     }
 
     async initChatbot(channelUrl: string) {
