@@ -7,10 +7,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GlobalExceptionFilter } from 'src/common/exception/expection.filter';
 import Joi from 'joi';
 import { TechBlogModule } from '../tech-blog/tech-blog.module';
+import { MapModule } from '../map/map.module';
 
 @Module({
     imports: [
       TechBlogModule,
+      MapModule,
       ConfigModule.forRoot({
         isGlobal: true,
         envFilePath: getEnvFileName(),

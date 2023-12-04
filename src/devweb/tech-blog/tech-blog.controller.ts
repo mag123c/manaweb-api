@@ -1,10 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TechBlogService } from './tech-blog.service';
 import { TechBlogLinks, TechBlogNameEnum } from './enum/tech-blog.enum';
 import { QueryNFException } from '../exception/customexception';
 
 @Controller('dev/tech-blog')
+@ApiTags('테크기업 블로그 크롤링')
 export class TechBlogController {
     constructor(
         private techBlogService: TechBlogService
