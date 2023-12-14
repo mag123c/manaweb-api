@@ -1,4 +1,4 @@
-import { Injectable, Inject  } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import * as sendbird from 'sendbird-platform-sdk-typescript';
 import CurrentUser from 'src/mananaweb/auth/dto/currentUser.dto';
 import { SendbirdUserRepository } from './sendbird.user.repository';
@@ -31,7 +31,7 @@ export class SendbirdUserService {
         private readonly sendbirdUserRepo: SendbirdUserRepository,
         @Inject(SEND_BIRD_PROVIDER)
         private sendbirdProvider: { sendbirdUserAPI: sendbird.UserApi, API_TOKEN: string },
-    ) {       
+    ) {
         this.API_TOKEN = sendbirdProvider.API_TOKEN;
         this.userAPI = sendbirdProvider.sendbirdUserAPI;
     }
@@ -44,28 +44,32 @@ export class SendbirdUserService {
      * @param cu 
      * @returns SendbirdUserEntity
      */
-    async getUserInfoAPI(cu: CurrentUser) {
+    async getUserInfoAPI(cu: CurrentUser): Promise<SendbirdUserEntity> {
         const { web_id, with_id } = cu;
 
         try {
-            //토큰 만료 테스트중
-            const testuser = await this.getUserFromSendbirdDashboard(web_id);
-            return testuser;
-            
+            // //토큰 만료 테스트중
+            // const testuser = await this.getUserFromSendbirdDashboard(web_id);
+            // return testuser;
+
             const user = await this.sendbirdUserRepo.findByUserId(web_id);
 
             //유저 있을 경우
-            if (user) return user;
+            if (user) {
+                // // -> token exp time 만료 시 토큰 재발급
+                // // 토큰 만료시간이 없나..? 테스트 시작시간 : 231129 13:56
+                // //getUnixTimeAfterDay() - 24시간 후의 unixtimestamp get
+                // const compareUnixDate = getUnixTimeAfetrDay();
+                // if (user.expirationTime < compareUnixDate) {
+                //     const updatedUser = await this.updateSendbirdUserToTable(web_id, with_id);
+                //     return updatedUser;
+                // }
 
-            // -> token exp time 만료 시 토큰 재발급
-            const compareUnixDate = getUnixTimeAfetrDay();
-            if (user.expirationTime < compareUnixDate) {
-                const updatedUser = await this.updateSendbirdUserToTable(web_id, with_id);
-                return updatedUser;
+                return user;
             }
-
+            
             //유저 없을 경우 생성 -> DB insert -> return SendbirdUserEntity
-            if (!user) {
+            else {
                 const savedUser = await this.saveSendbirdUserToTable(web_id, with_id);
                 return savedUser;
             }
@@ -81,12 +85,12 @@ export class SendbirdUserService {
      * @param userId 
      * @returns sendbird.SendBirdUser;
      */
-    async postUserCreateAPI(web_id: string, with_id: string) {
-        return await this.saveSendbirdUserToTable(web_id, with_id);        
+    async postUserCreateAPI(web_id: string, with_id: string): Promise<SendbirdUserEntity> {
+        return await this.saveSendbirdUserToTable(web_id, with_id);
     }
     /** API part end **/
 
-    
+
 
     /** Business Logic part **/
 
@@ -144,7 +148,7 @@ export class SendbirdUserService {
             //3. custom repo insert
             const savedUser = await this.sendbirdUserRepo.saveUser(userEntity);
 
-            if (savedUser) return userEntity;            
+            if (savedUser) return userEntity;
             return null;
         }
         catch (error) {
@@ -168,7 +172,7 @@ export class SendbirdUserService {
 
             //3. custom repo update
             const updatedUser = await this.sendbirdUserRepo.updateUser(userEntity);
-            
+
             if (updatedUser) return userEntity;
             return null;
         }
