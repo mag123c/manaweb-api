@@ -25,8 +25,7 @@ export class SendbirdMessageController {
   @ApiOperation({ description: '메세지 전송' })
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
   async sendTextMsg(@Body() msgDto: SendbirdTextMsgDto, @Jwt() cu: CurrentUser) {
-    const channel = await this.sendbirdChannelService.getChannelByUrl(msgDto.channelUrl);
-    return await this.sendbirdMessageService.sendTextMsgToChannel(msgDto, cu, channel);
+    return await this.sendbirdMessageService.sendTextMsgToChannel(msgDto, cu);
   }
 
 

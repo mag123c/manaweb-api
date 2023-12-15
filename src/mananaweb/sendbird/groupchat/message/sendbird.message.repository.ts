@@ -15,5 +15,14 @@ export class SendbirdMessageRepository extends Repository<SendbirdUserMessageEnt
         super(SendbirdUserMessageEntity, dataSource.manager);
     }
 
-
+    async updateReadStatus(webId: string, channelUrl: string) {
+        return await this.createQueryBuilder()
+            .update()
+            .set({
+                read: true,                
+            })
+            .where("channelUrl = :channelUrl", { channelUrl })
+            .andWhere('userId = :webId', { webId })            
+            .execute();
+    }
 }

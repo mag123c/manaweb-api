@@ -32,6 +32,6 @@ export class SendbirdUserMessageEntity {
     createdAt: number;
 
     @ApiProperty({ description: 'read' })
-    @Column('tinyint', { name: 'read' })
-    read: number;    
+    @Column('boolean', { name: 'read' })
+    read: boolean;    
 }

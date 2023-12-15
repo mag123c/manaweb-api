@@ -32,10 +32,9 @@ export class SendbirdChannelService {
      * @param userId 
      * @returns GcListChannelsResponse
      */
-    async getGroupChannelListByUserId(userId: string): Promise<sendbird.GcListChannelsResponse> {
+    async getGroupChannelListByUserId(webId: string): Promise<sendbird.GcListChannelsResponse> {
         try {
-            const channelList = await this.channelAPI.gcListChannels(this.API_TOKEN, userId);
-            console.log(channelList);
+            const channelList = await this.channelAPI.gcListChannels(this.API_TOKEN);
             return channelList;
         }
         catch (error) {
@@ -51,14 +50,18 @@ export class SendbirdChannelService {
  */
     async createGroupChannelByUserId(cu: CurrentUser, targetId: string): Promise<sendbird.SendBirdGroupChannel> {
         if (!targetId) targetId = '아이웨딩';
-        const userIds = [cu.web_id, targetId];
+        const userIds = [cu.webId, targetId];
         try {
             const channel = await this.channelAPI.gcCreateChannel(this.API_TOKEN, { userIds, isDistinct: true });
 
+            //targetId로 withId 조회해서 리턴해서 withId컬럼에 넣어주기, 지금은 임시.
+            //targetId로 withId 조회해서 리턴해서 withId컬럼에 넣어주기, 지금은 임시.
+            //targetId로 withId 조회해서 리턴해서 withId컬럼에 넣어주기, 지금은 임시.
+            //고객님이 방을 여는 경우는 없기 때문에, withId - 고객, channelCreateId - 방 생성자. (서비스팀, 업체)
             // DB insert            
             const channelEntity = new SendbirdUserChannelEntity();
-            channelEntity.withId = cu.with_id;
-            channelEntity.userId = cu.web_id;
+            channelEntity.withId = cu.withId;
+            channelEntity.channelCreateId = cu.webId;
             channelEntity.channelUrl = channel.channelUrl;
 
             const existChannel = await this.sendbirdChannelRepo.findOneBy({ channelUrl: channelEntity.channelUrl });
@@ -79,15 +82,18 @@ export class SendbirdChannelService {
 
 
     //channel DB select query
-    async getGroupChannelListFromDB(web_id: string) {
-        return await this.sendbirdChannelRepo.findByUserId(web_id);
+    async getGroupChannelListFromDB(withId: string) {
+        return await this.sendbirdChannelRepo.findByUserId(withId);
     }
 
     //채팅방 입장 시 해당 채팅방 정보
     async getChannelByUrl(channelUrl: string): Promise<sendbird.SendBirdGroupChannel> {
         try {
-            return await this.channelAPI.gcViewChannelByUrl(this.API_TOKEN, channelUrl);
-        }
+            const a = await this.channelAPI.gcViewChannelByUrl(this.API_TOKEN, channelUrl, true, true, true, true, true);
+            const b = await this.channelAPI.gcListMembers(this.API_TOKEN, channelUrl)
+            console.log(b);
+            return a;
+        }        
         catch (error) {
             ErrorTypeCheck(error);
         }

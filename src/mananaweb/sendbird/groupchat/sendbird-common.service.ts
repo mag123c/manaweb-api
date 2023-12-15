@@ -5,6 +5,8 @@ import CurrentUser from "src/mananaweb/auth/dto/currentUser.dto";
 import { SendbirdUserService } from "./user/sendbird.user.service";
 import { ReturnInterface } from "../interface/return.interface";
 import { SendbirdTextMsgDto } from "./message/entity/dto/sendbird.message.dto";
+import { getUnixTime } from "src/common/util/DateUtil";
+import { ErrorTypeCheck } from "src/mananaweb/util/exception/error-type-check";
 
 @Injectable()
 export class SendbirdCommonService {
@@ -39,7 +41,23 @@ export class SendbirdCommonService {
             channelUrl: channelUrl
         }
 
-        return await this.sendbirdMessageService.sendTextMsgToChannel(dto, cu, channel);
+        return await this.sendbirdMessageService.sendTextMsgToChannel(dto, cu);
+    }
+
+    /**
+     * 
+     * @param webId 
+     * @param channelUrl 
+     * @returns ReturnInterface
+     */
+    async messageRead(webId: string, channelUrl: string): Promise<ReturnInterface> {
+        try {
+            await this.sendbirdMessageService.updateReadStatus(webId, channelUrl);
+            return { status: true, message: '[message status changed from unread to read]' }
+        }
+        catch (error) {
+            ErrorTypeCheck(error);
+        }        
     }
 
 }

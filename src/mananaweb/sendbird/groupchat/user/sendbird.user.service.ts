@@ -42,14 +42,14 @@ export class SendbirdUserService {
      * @returns SendbirdUserEntity
      */
     async getUserInfo(cu: CurrentUser): Promise<SendbirdUserEntity> {
-        const { web_id, with_id } = cu;
+        const { webId, withId } = cu;
 
         try {
             // //토큰 만료 테스트중
             // const testuser = await this.getUserFromSendbirdDashboard(web_id);
             // return testuser;
 
-            const user = await this.sendbirdUserRepo.findByUserId(web_id);
+            const user = await this.sendbirdUserRepo.findByUserId(webId);
 
             //유저 있을 경우
             if (user) {
@@ -67,7 +67,7 @@ export class SendbirdUserService {
             
             //유저 없을 경우 생성 -> DB insert -> return SendbirdUserEntity
             else {
-                const savedUser = await this.saveSendbirdUserToTable(web_id, with_id);
+                const savedUser = await this.saveSendbirdUserToTable(webId, withId);
                 return savedUser;
             }
         }
@@ -189,7 +189,7 @@ export class SendbirdUserService {
      */
     async getUserFromSendbirdAndCreateEntity(user_id: string, with_id: string): Promise<SendbirdUserEntity> {
         const getUser = await this.getUserFromSendbirdDashboard(user_id);
-        const { userId, nickname, accessToken, createdAt } = getUser;
+        const { userId, nickname, accessToken, createdAt } = getUser;        
 
         const userEntity = await SendbirdUserEntityBuild(with_id, userId, nickname, accessToken, createdAt);
         return userEntity;

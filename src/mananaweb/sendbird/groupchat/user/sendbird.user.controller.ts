@@ -27,7 +27,7 @@ export class SendbirdUserController {
   @Get()
   async getConnectionByUserId(@Jwt() cu: CurrentUser): Promise<{ 'user': SendbirdUserEntity, 'channel': boolean }> {
     const user =  await this.sendbirdUserSerivce.getUserInfo(cu);
-    const channel = await this.sendbirdChannelService.getGroupChannelListFromDB(cu.web_id);
+    const channel = await this.sendbirdChannelService.getGroupChannelListFromDB(cu.withId);
     return { user, channel: channel.length > 0 ? true : false };
   }
 
@@ -41,7 +41,7 @@ export class SendbirdUserController {
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400202 })
   @Post()
   async createUser(@Jwt() cu: CurrentUser): Promise<SendbirdUserEntity> {
-    return await this.sendbirdUserSerivce.saveSendbirdUserToTable(cu.web_id, cu.with_id);
+    return await this.sendbirdUserSerivce.saveSendbirdUserToTable(cu.webId, cu.withId);
   }
 
   // **************************************아래는 미사용하는 코드********************************************** 

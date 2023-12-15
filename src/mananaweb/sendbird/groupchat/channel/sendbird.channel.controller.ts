@@ -25,8 +25,15 @@ export class SendbirdChannelController {
   @ApiOperation({ description: '그룹채널 리스트 조회' })
   @Get()
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
-  async getchannelList(@Jwt() cu: CurrentUser) {
-    return await this.sendbirdChannelService.getGroupChannelListByUserId(cu.web_id);
+  async getChannelList(@Jwt() cu: CurrentUser) {
+    return await this.sendbirdChannelService.getGroupChannelListByUserId(cu.webId);
+  }
+
+  @ApiOperation({ description: '채널 URL로 채널정보 조회' })
+  @Get(':channelUrl')
+  @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
+  async getChannelListByUrl(@Jwt() cu: CurrentUser, @Param('channelUrl') channelUrl: string) {
+    return await this.sendbirdChannelService.getChannelByUrl(channelUrl);
   }
 
   /**

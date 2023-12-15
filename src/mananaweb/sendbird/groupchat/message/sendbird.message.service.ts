@@ -37,7 +37,7 @@ export class SendbirdMessageService {
      * @param messageDto 
      * @returns 
      */
-    async sendTextMsgToChannel(messageDto: SendbirdTextMsgDto, cu: CurrentUser, channel: sendbird.SendBirdGroupChannel): Promise<ReturnInterface> {
+    async sendTextMsgToChannel(messageDto: SendbirdTextMsgDto, cu: CurrentUser): Promise<ReturnInterface> {
         try {
             const { messageType, userId, message, channelUrl } = messageDto;
 
@@ -45,15 +45,20 @@ export class SendbirdMessageService {
                 { messageType: messageType, userId: userId, message: message }
             )
 
-            //READ 체크를 위해 메세지 받는사람 온라인여부 체크
-            const targetUserOnlineStatus: boolean = channel.members.some((member) => {
-                return member.userId === '아이웨딩' && member.isOnline;
-            });
+            //READ 체크를 위해 메세지 받는사람 온라인여부 체크 (고객 입장에서는 필요없음)
+            // 실제 서비스에서 사용 시 with아이디로 web아이디 가져와서 사용할것
+            let isOneline = false;
+            if (userId === '아이웨딩') {
+                const unreadMessageCnt = await this.messageAPI.gcViewNumberOfEachMembersUnreadMessages(this.API_TOKEN, channelUrl, 'test1')
+                isOneline = (unreadMessageCnt.unread['test1'] > 1) ? false : true;
+            }
+
+            // console.log(channel.members, targetUserOnlineStatus);
 
             // 메세지 DB 저장
             const targetId = msgSend.user.userId;
             const messageId = msgSend.messageId;
-            const messageEntity = await SendbirdUserMessageEntityBuild(cu.web_id, channelUrl, messageId, message, targetId, getUnixTime(), targetUserOnlineStatus);
+            const messageEntity = await SendbirdUserMessageEntityBuild(cu.webId, channelUrl, messageId, message, targetId, getUnixTime(), isOneline);
             await this.sendbirdMessageRepo.save(messageEntity);
 
             // 채널 업데이트
@@ -80,12 +85,22 @@ export class SendbirdMessageService {
         }
     }
 
+    /**
+     * 
+     * @param webId 
+     * @param channelUrl 
+     * @param nowUnixTime 
+     * @returns 
+     */
+    async updateReadStatus(webId: string, channelUrl: string) {
+        return await this.sendbirdMessageRepo.updateReadStatus(webId, channelUrl);
+    }
+
 
     /** 미사용 **/
     async getMsg() {
         try {
-            const msg = await this.messageAPI.listMessages(this.API_TOKEN, 'group_channels', 'sendbird_group_channel_132276856_8dfd8be8ec15d3630b0e3782ad868afcd4af8219', '1484208113351')
-            console.log(msg);
+            const msg = await this.messageAPI.listMessages(this.API_TOKEN, 'group_channels', 'sendbird_group_channel_134364416_f8018bdf877118b5e3d2dff9a34cbd9565bf79b0', '1484208113351')
             return msg;
         } catch (error) {
             ErrorTypeCheck(error);

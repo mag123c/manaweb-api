@@ -21,7 +21,7 @@ export class SendbirdChannelRepository extends Repository<SendbirdUserChannelEnt
             .into(SendbirdUserChannelEntity)
             .values({
                 withId: entity.withId,
-                userId: entity.userId,
+                channelCreateId: entity.channelCreateId,
                 channelUrl: entity.channelUrl,
                 createdAt: getUnixTime(),
             })
@@ -42,9 +42,11 @@ export class SendbirdChannelRepository extends Repository<SendbirdUserChannelEnt
             .execute();
     }
 
-    async findByUserId(userId: string) {
-        return await this.createQueryBuilder()
-            .where('userId = :userId', { userId })
+    //고객입장이기 때문에 withId로 테이블 조회하면됨.
+    // 테스트단계에서 아이웨딩 계정에 대한 테스트 통합해서 진행 -> 나중에 withId만으로 수정 필요
+    async findByUserId(withId: string) {
+        return await this.createQueryBuilder('channel')
+            .where('channel.withId = :withId', { withId })
             .getMany();
     }
 }
