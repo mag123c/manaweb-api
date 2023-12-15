@@ -11,6 +11,12 @@ import { SendbirdChannelController } from './groupchat/channel/sendbird.channel.
 import { SendbirdUserService } from './groupchat/user/sendbird.user.service';
 import { SendbirdChannelService } from './groupchat/channel/sendbird.channel.service';
 import { SendbirdUserRepository } from './groupchat/user/sendbird.user.repository';
+import { SendbirdChannelRepository } from './groupchat/channel/sendbird.channel.repository';
+import { SendbirdUserChannelEntity } from './entity/sendbird.userchannel.entity';
+import { SendbirdUserMessageEntity } from './entity/sendbird.usermessage.entity';
+import { SendbirdMessageRepository } from './groupchat/message/sendbird.message.repository';
+import { SendbirdCommonService } from './groupchat/sendbird-common.service';
+import { SendbirdCommonController } from './groupchat/sendbird-common.controller';
 
 
 @Module({
@@ -19,28 +25,35 @@ import { SendbirdUserRepository } from './groupchat/user/sendbird.user.repositor
     SendbirdChannelController,
     SendbirdChatbotController,
     SendbirdMessageController,
-],
+    SendbirdCommonController,
+  ],
   exports: [
     SendbirdUserProvider,
     SendbirdUserService,
     SendbirdChannelService,
     SendbirdChatbotService,
     SendbirdMessageService,
-],
+    SendbirdCommonService,
+  ],
   providers: [
     SendbirdUserProvider,
     SendbirdUserService,
     SendbirdChannelService,
     SendbirdChatbotService,
     SendbirdMessageService,
+    SendbirdCommonService,
 
     SendbirdUserRepository,
-    ],
+    SendbirdChannelRepository,
+    SendbirdMessageRepository,
+  ],
   imports: [
     TypeOrmModule.forFeature([
       SendbirdUserEntity,
-    ]), 
+      SendbirdUserChannelEntity,
+      SendbirdUserMessageEntity,
+    ]),
   ]
 })
 
-export class SendbirdModule {}
+export class SendbirdModule { }

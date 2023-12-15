@@ -20,7 +20,6 @@ export class SendbirdUserRepository extends Repository<SendbirdUserEntity> {
     }
 
     async saveUser(userEntity: SendbirdUserEntity): Promise<InsertResult> {
-        console.log(userEntity);
         return await this.createQueryBuilder()
             .insert()
             .into(SendbirdUserEntity)

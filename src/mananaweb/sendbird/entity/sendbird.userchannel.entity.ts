@@ -7,35 +7,35 @@ export class SendbirdUserChannelEntity {
     @PrimaryGeneratedColumn({ type: 'int' })
     no: number;
 
-    @ApiProperty({ description: 'with_id' })
+    @ApiProperty({ description: 'with_id', nullable: false })
     @Column({ name: 'with_id' })
-    with_id: string;
+    withId: string;
 
-    @ApiProperty({ description: 'userId' })
+    @ApiProperty({ description: 'userId', nullable: false })
     @Column({ name: 'userId' })
     userId: string;
 
-    @ApiProperty({ description: 'channelUrl' })
+    @ApiProperty({ description: 'channelUrl', nullable: false })
     @Column({ name: 'channelUrl' })
     channelUrl: string;
 
-    @ApiProperty({ description: 'lastMessage_message' })
+    @ApiProperty({ description: 'lastMessage_message', nullable: true, required: false })
     @Column({ name: 'lastMessage_message' })
     lastMessageMessage: string;
 
-    @ApiProperty({ description: 'lastMessage_sender_userId' })
+    @ApiProperty({ description: 'lastMessage_sender_userId', nullable: true, required: false })
     @Column({ name: 'lastMessage_sender_userId' })
     lastMessageSenderUserId: string;
 
-    @ApiProperty({ description: 'lastMessage_createdAt' })
+    @ApiProperty({ description: 'lastMessage_createdAt', nullable: true, required: false })
     @Column({ name: 'lastMessage_createdAt' })
     lastMessageCreatedAt: number;
 
-    @ApiProperty({ description: 'unreadMessageCount' })
+    @ApiProperty({ description: 'unreadMessageCount', nullable: true, required: false })
     @Column({ name: 'unreadMessageCount' })
     unreadMessageCount: number;
 
-    @ApiProperty({ description: 'createdAt' })
+    @ApiProperty({ description: 'createdAt', nullable: true, required: false })
     @Column({ name: 'createdAt' })
     createdAt: number;    
 }

@@ -2,12 +2,11 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as sendbird from 'sendbird-platform-sdk-typescript';
 import CurrentUser from 'src/mananaweb/auth/dto/currentUser.dto';
 import { SendbirdUserRepository } from './sendbird.user.repository';
-import { getUnixTimeAfetrDay } from 'src/common/util/DateUtil';
 import { SEND_BIRD_PROVIDER } from '../../sendbird.provider';
-import { SendbirdBadRequestException } from '../../util/customException';
+import { SendbirdBadRequestException } from '../../../util/exception/customException';
 import { SendbirdUserEntity } from '../../entity/sendbird.userinfo.entity';
-import { SendbirdUserEntityBuilder } from '../../builder/sendbird.userinfo.builder';
-import { InsertResult, UpdateResult } from 'typeorm';
+import { SendbirdUserEntityBuild } from '../../builder/sendbird.userinfo.builder';
+import { ErrorTypeCheck } from 'src/mananaweb/util/exception/error-type-check';
 
 //sendbird 접속 로직
 // (선행 상황 : Front -> Access Token을 가지러 오는 요청 발생)
@@ -36,15 +35,13 @@ export class SendbirdUserService {
         this.userAPI = sendbirdProvider.sendbirdUserAPI;
     }
 
-    /** API part **/
-
     /**
      * 접속 시 유저 정보 조회
      * API endpoint - GET api/v1/sendbird/user
      * @param cu 
      * @returns SendbirdUserEntity
      */
-    async getUserInfoAPI(cu: CurrentUser): Promise<SendbirdUserEntity> {
+    async getUserInfo(cu: CurrentUser): Promise<SendbirdUserEntity> {
         const { web_id, with_id } = cu;
 
         try {
@@ -75,24 +72,9 @@ export class SendbirdUserService {
             }
         }
         catch (error) {
-            console.error(error);
+            ErrorTypeCheck(error);
         }
     }
-
-    /**
-     * Create User From Sendbird DashBoard
-     * API endpoint - POST api/v1/sendbird/user
-     * @param userId 
-     * @returns sendbird.SendBirdUser;
-     */
-    async postUserCreateAPI(web_id: string, with_id: string): Promise<SendbirdUserEntity> {
-        return await this.saveSendbirdUserToTable(web_id, with_id);
-    }
-    /** API part end **/
-
-
-
-    /** Business Logic part **/
 
     /**
      * Get User From Sendbird DashBoard
@@ -104,8 +86,7 @@ export class SendbirdUserService {
             const user = await this.userAPI.viewUserById(this.API_TOKEN, userId);
             return user;
         } catch (error) {
-            const { message, code } = JSON.parse(error.body);
-            throw new SendbirdBadRequestException(message, code);
+            ErrorTypeCheck(error);
         }
     }
 
@@ -126,8 +107,7 @@ export class SendbirdUserService {
             const user = await this.userAPI.createUser(this.API_TOKEN, userData);
             return user;
         } catch (error) {
-            const { message, code } = JSON.parse(error.body);
-            throw new SendbirdBadRequestException(message, code);
+            ErrorTypeCheck(error);
         }
     }
 
@@ -152,7 +132,7 @@ export class SendbirdUserService {
             return null;
         }
         catch (error) {
-
+            ErrorTypeCheck(error);
         }
     }
 
@@ -177,7 +157,7 @@ export class SendbirdUserService {
             return null;
         }
         catch (error) {
-            console.error(error);
+            ErrorTypeCheck(error);
         }
     }
     /**
@@ -197,8 +177,7 @@ export class SendbirdUserService {
             const updateUser = await this.userAPI.updateUserById(this.API_TOKEN, userId, userData);
             return updateUser;
         } catch (error) {
-            const { message, code } = JSON.parse(error.body);
-            throw new SendbirdBadRequestException(message, code);
+            ErrorTypeCheck(error);
         }
     }
 
@@ -212,37 +191,9 @@ export class SendbirdUserService {
         const getUser = await this.getUserFromSendbirdDashboard(user_id);
         const { userId, nickname, accessToken, createdAt } = getUser;
 
-        const userEntity = await this.sendbirdUserEntityBuild(with_id, userId, nickname, accessToken, createdAt);
+        const userEntity = await SendbirdUserEntityBuild(with_id, userId, nickname, accessToken, createdAt);
         return userEntity;
     }
-
-    /** Business Logic part end **/
-
-
-    /** ETC **/
-
-    /**
-     * Entity Builder
-     * @param withId 
-     * @param userId 
-     * @param nickname 
-     * @param accessToken 
-     * @param createTime 
-     * @returns SendbirdUserEntity
-     */
-    async sendbirdUserEntityBuild(withId: string, userId: string, nickname: string, accessToken: string, createTime: number) {
-        return new SendbirdUserEntityBuilder()
-            .withWithId(withId)
-            .withUserId(userId)
-            .withNickname(nickname)
-            .withAccessToken(accessToken)
-            .withCreateTime(createTime)
-            .withExpirationTime(getUnixTimeAfetrDay())
-            .build();
-    }
-
-    /** ETC end**/
-
 
 
     // **************************************아래는 미사용하는 코드********************************************** 
@@ -256,8 +207,7 @@ export class SendbirdUserService {
             const users = await this.userAPI.listUsers(this.API_TOKEN, '', 10);
             return users.users;
         } catch (error) {
-            const { message, code } = JSON.parse(error.body);
-            throw new SendbirdBadRequestException(message, code);
+            ErrorTypeCheck(error);
         }
     }
 
@@ -276,8 +226,7 @@ export class SendbirdUserService {
             const token = await this.userAPI.createUserToken(this.API_TOKEN, userId, { expiresAt: unixTimestamp })
             return token
         } catch (error) {
-            const { message, code } = JSON.parse(error.body);
-            throw new SendbirdBadRequestException(message, code);
+            ErrorTypeCheck(error);
         }
     }
 }

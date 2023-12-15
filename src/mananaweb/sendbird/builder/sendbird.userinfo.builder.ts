@@ -1,3 +1,4 @@
+import { getUnixTimeAfetrDay } from "src/common/util/DateUtil";
 import { SendbirdUserEntity } from "../entity/sendbird.userinfo.entity";
 
 export class SendbirdUserEntityBuilder{
@@ -8,33 +9,33 @@ export class SendbirdUserEntityBuilder{
   private expirationTime: number;
   private createTime: number;
 
-  withWithId(withId: string) {
+  setWithId(withId: string) {
     this.withId = withId;
     return this;
   }
 
 
-  withUserId(userId: string) {
+  setUserId(userId: string) {
     this.userId = userId;
     return this;
   }
 
-  withNickname(nickname: string) {
+  setNickname(nickname: string) {
     this.nickname = nickname;
     return this;
   }
 
-  withAccessToken(accessToken: string) {
+  setAccessToken(accessToken: string) {
     this.accessToken = accessToken;
     return this;
   }
 
-  withExpirationTime(expirationTime: number) {
+  setExpirationTime(expirationTime: number) {
     this.expirationTime = expirationTime;
     return this;
   }
 
-  withCreateTime(createTime: number) {
+  setCreateTime(createTime: number) {
     this.createTime = createTime;
     return this;
   }
@@ -43,4 +44,16 @@ export class SendbirdUserEntityBuilder{
   build(): SendbirdUserEntity {
     return Object.assign(new SendbirdUserEntity(), this);
   }
+}
+
+export const SendbirdUserEntityBuild = async (withId: string, userId: string, nickname: string, accessToken: string, createTime: number) => {
+  return new SendbirdUserEntityBuilder()
+      .setWithId(withId)
+      .setUserId(userId)
+      .setNickname(nickname)
+      .setAccessToken(accessToken)
+      .setCreateTime(createTime)
+      //만료기간 확인하면 변경하기.
+      .setExpirationTime(getUnixTimeAfetrDay())
+      .build();
 }

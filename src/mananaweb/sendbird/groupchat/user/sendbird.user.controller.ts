@@ -4,14 +4,16 @@ import { SendbirdUserService } from './sendbird.user.service';
 import { SendbirdDashBoardUserCreateResponse, SendbirdDashBoardUserListResponse, SendbirdDashBoardUserResponse, SendbirdDashBoardUserTokenResponse } from './resopnse/sendbird.user.response';
 import { Jwt } from 'src/common/decorator/CurrentUserDecorator';
 import CurrentUser from 'src/mananaweb/auth/dto/currentUser.dto';
-import { SendbirdBadRequestResponse400201, SendbirdBadRequestResponse400105, SendbirdBadRequestResponse400202 } from '../../util/reponse/errorResponse';
+import { SendbirdBadRequestResponse400201, SendbirdBadRequestResponse400105, SendbirdBadRequestResponse400202 } from '../../../util/exception/reponse/errorResponse';
 import { SendbirdUserEntity } from '../../entity/sendbird.userinfo.entity';
+import { SendbirdChannelService } from '../channel/sendbird.channel.service';
 @ApiTags('sendbird')
 @Controller('/sendbird/user')
 export class SendbirdUserController {
   constructor
     (
       private sendbirdUserSerivce: SendbirdUserService,
+      private sendbirdChannelService: SendbirdChannelService,
     ) { }
 
   /**
@@ -23,8 +25,10 @@ export class SendbirdUserController {
   @ApiOkResponse({ type: SendbirdDashBoardUserResponse })
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
   @Get()
-  async getConnectionByUserId(@Jwt() cu: CurrentUser) {
-    return await this.sendbirdUserSerivce.getUserInfoAPI(cu);
+  async getConnectionByUserId(@Jwt() cu: CurrentUser): Promise<{ 'user': SendbirdUserEntity, 'channel': boolean }> {
+    const user =  await this.sendbirdUserSerivce.getUserInfo(cu);
+    const channel = await this.sendbirdChannelService.getGroupChannelListFromDB(cu.web_id);
+    return { user, channel: channel.length > 0 ? true : false };
   }
 
   /**
@@ -37,7 +41,7 @@ export class SendbirdUserController {
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400202 })
   @Post()
   async createUser(@Jwt() cu: CurrentUser): Promise<SendbirdUserEntity> {
-    return await this.sendbirdUserSerivce.postUserCreateAPI(cu.web_id, cu.with_id);
+    return await this.sendbirdUserSerivce.saveSendbirdUserToTable(cu.web_id, cu.with_id);
   }
 
   // **************************************아래는 미사용하는 코드********************************************** 

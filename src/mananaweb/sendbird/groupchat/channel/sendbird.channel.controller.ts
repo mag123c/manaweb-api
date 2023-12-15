@@ -2,12 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@
 import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SendbirdChannelService } from './sendbird.channel.service';
 import { SendbirdCreateChannelResponse } from './response/sendbird.channel.response';
-import { SendbirdBadRequestResponse400104, SendbirdBadRequestResponse400201 } from '../../util/reponse/errorResponse';
+import { SendbirdBadRequestResponse400104, SendbirdBadRequestResponse400201 } from '../../../util/exception/reponse/errorResponse';
 import { Jwt } from 'src/common/decorator/CurrentUserDecorator';
 import CurrentUser from 'src/mananaweb/auth/dto/currentUser.dto';
+import { ReturnInterface } from '../../interface/return.interface';
 
 @ApiTags('sendbird')
-@Controller('/sendbird/groupChannel')
+@Controller('/sendbird/channel')
 export class SendbirdChannelController {
   constructor
     (
@@ -25,7 +26,7 @@ export class SendbirdChannelController {
   @Get()
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400201 })
   async getchannelList(@Jwt() cu: CurrentUser) {
-    return await this.sendbirdChannelService.getGroupChannelListByUserIdAPI(cu.web_id);
+    return await this.sendbirdChannelService.getGroupChannelListByUserId(cu.web_id);
   }
 
   /**
@@ -38,6 +39,7 @@ export class SendbirdChannelController {
   @ApiBadRequestResponse({ type: SendbirdBadRequestResponse400104 })
   @Post()
   async createChannel(@Jwt() cu: CurrentUser, @Body('target') target: string) {
-    return await this.sendbirdChannelService.createGroupChannelByUserIdAPI(cu.web_id, target);
+    return await this.sendbirdChannelService.createGroupChannelByUserId(cu, target);
   }
+
 }

@@ -42,6 +42,13 @@ export function isAfter(curDate: Date, targetDate: Date = new Date()) {
   return moment(curDate).isAfter(targetDate);
 }
 
+export function getUnixTime(): number {
+  return Math.floor(new Date().getTime() / 1000);
+}
+
 export function getUnixTimeAfetrDay() {
-  return (new Date().setDate(new Date().getDate() + 1)) / 1000;
+  return 0;
+  // const tomorrow = new Date();
+  // tomorrow.setDate(tomorrow.getDate() + 1);
+  // return Math.floor(tomorrow.getTime() / 1000);
 }
