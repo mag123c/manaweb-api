@@ -45,6 +45,10 @@ export class SendbirdMessageService {
                 { messageType: messageType, userId: userId, message: message }
             )
 
+            //SEND API에서 나오는 user가 sender_userID로 가야한다함.
+            //그냥 USERID는 무조건 유저.
+            console.log(msgSend);
+
             //READ 체크를 위해 메세지 받는사람 온라인여부 체크 (고객 입장에서는 필요없음)
             // 실제 서비스에서 사용 시 with아이디로 web아이디 가져와서 사용할것
             let isOneline = false;
